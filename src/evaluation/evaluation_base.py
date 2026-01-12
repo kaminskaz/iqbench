@@ -221,7 +221,8 @@ class EvaluationBase(ABC):
         else:
             answers_path = os.path.join(results_dir, "results.csv")
         
-        if "classification" in results_dir and dataset_name == "bp":
+        dataset_config = get_dataset_config(dataset_name)
+        if "classification" in results_dir and dataset_config.category == "BP":
             key_path = os.path.join("data", dataset_name, "jsons", "classification_solutions.json")
         else:
             key_path = os.path.join("data", dataset_name, "jsons", f"{dataset_name}_solutions.json")

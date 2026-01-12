@@ -77,4 +77,4 @@ if __name__ == "__main__":
     #run_all_evaluations()
     #run_evals_update()
     pipeline = FullPipeline()
-    pipeline.run_missing_evaluations_in_directory(path="results/ensembles")
+    pipeline.run_missing_evaluations_in_directory(path="results/bp", judge_model_name="Qwen/Qwen2.5-VL-7B-Instruct")

@@ -86,7 +86,7 @@ class EnsembleBase(ABC):
         for idx, mem in enumerate(self.members_configuration):
             strategy, model_name, version = mem
 
-            if self.dataset_name == 'bp' and strategy == 'classification':
+            if self.dataset_config.category == 'BP' and strategy == 'classification':
                 self.logger.info(
                     f"Skipping configuration {idx}: 'classification' strategy is not allowed "
                     f" for dataset '{self.dataset_name}'."

@@ -21,7 +21,7 @@ class EvaluationFactory():
         ensemble: bool = False
     ) -> Optional[Type[EvaluationBase]]:
         
-        if dataset_name.lower() == "bp":
+        if "bp" in dataset_name.lower():
             if not ensemble and strategy_name is None:
                 raise ValueError("strategy_name must be provided for non-ensemble evaluations.")
             if strategy_name is not None and strategy_name.lower() == "classification":

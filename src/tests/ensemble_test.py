@@ -147,9 +147,10 @@ def seed_and_version_test(dataset):
     versions = [100, 101, 102]
     seeds = [100, 100, 101]
 
+    dataset_config = get_dataset_config(dataset)
     for ver, seed in zip(versions, seeds):
         for config in configurations:
-            if dataset == "bp":
+            if dataset_config.category == "BP":
                 model = VLLM(model_name)
             else:
                 model = None
@@ -173,7 +174,7 @@ def get_config_and_seed(version: int, dataset_name: str, model_number: int = 0):
     seed = version % 10
 
     top_members_dataset = []
-    if dataset_name == "bp":
+    if "bp" in dataset_name.lower():
         top_members_dataset = [['direct', 'OpenGVLab/InternVL3-8B', '1'], ['direct', 'OpenGVLab/InternVL3-8B', '3'], ['descriptive', 'OpenGVLab/InternVL3-8B', '1'], ['descriptive', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '1']]
     elif dataset_name == "cvr":
         top_members_dataset = [['classification', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'OpenGVLab/InternVL3-8B', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['classification', 'OpenGVLab/InternVL3-8B', '3']]
@@ -217,9 +218,11 @@ def run_pipeline_for_dataset(dataset: str, pipeline, model_name, model_number = 
 
     offset = model_number * 100
 
+    dataset_config = get_dataset_config(dataset)
+
     for type_name in type_names:
-        if type_name in ["reasoning", "reasoning_with_image"] or dataset == "bp":
-            max_range = 80 if dataset == "bp" else 90
+        if type_name in ["reasoning", "reasoning_with_image"] or dataset_config.category == "BP":
+            max_range = 80 if dataset_config.category == "BP" else 90
             versions_to_run = (v + offset for v in range(0, max_range, 10))
         else:
             versions_to_run = (v + offset for v in range(90))
@@ -237,12 +240,57 @@ def run_pipeline_for_dataset(dataset: str, pipeline, model_name, model_number = 
             )
             
             # Increment counter and check for reset
-            if type_name in ["reasoning", "reasoning_with_image"] or dataset == "bp":
+            if type_name in ["reasoning", "reasoning_with_image"] or dataset_config.category == "BP":
                 run_counter += 1
                 if run_counter % 2 == 0:
                     print(f"--- Resetting model after {run_counter} total runs ---")
                     model.stop()
                     model = VLLM(model_name) # Replace old model with a fresh one
+
+def run_pipeline_for_dataset_test(dataset: str, pipeline, model_name, model_number = 0):
+    type_names = ["reasoning", "reasoning_with_image", "majority", "confidence"]
+    
+    model = VLLM(model_name)
+    run_counter = 0
+    offset = model_number * 100
+    dataset_config = get_dataset_config(dataset)
+
+    for type_name in type_names:
+        is_singular_run = (type_name in ["reasoning", "reasoning_with_image"] or 
+                           dataset_config.category == "BP")
+
+        versions_to_run = []
+
+        if is_singular_run:
+            versions_to_run = [0, 10] 
+            
+            if "raven" in dataset.lower() and type_name == "reasoning_with_image":
+                if model_number == 1:
+                    versions_to_run.append(30)
+        else:
+            versions_to_run = list(range(0, 20))
+
+        final_versions = [v + offset for v in versions_to_run]
+
+        for ver in final_versions:
+            config, seed = get_config_and_seed(ver, dataset, model_number)
+            
+            pipeline.run_ensemble(
+                dataset_name=dataset,
+                members_configuration=config,
+                type_name=type_name,
+                model_object=model,
+                version=ver,
+                seed=seed
+            )
+            
+            # Reset logic for models (only applies to reasoning/BP runs)
+            if is_singular_run:
+                run_counter += 1
+                if run_counter % 2 == 0:
+                    print(f"--- Resetting model after {run_counter} total runs ---")
+                    model.stop()
+                    model = VLLM(model_name)
 
 import argparse
 
@@ -268,6 +316,8 @@ if __name__ == "__main__":
     # model_name = "OpenGVLab/InternVL3-8B"
     # model_number = 1
 
+    
+    #run_pipeline_for_dataset(dataset, pipeline, model_name, model_number)
     run_pipeline_for_dataset(dataset, pipeline, model_name, model_number)
     
     #run_all_ensembles(dataset)
