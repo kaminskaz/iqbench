@@ -7,9 +7,9 @@ from src.evaluation.evaluation_basic import EvaluationBasic
 
 
 def main():
-    pd.set_option('display.max_colwidth', None) 
+    pd.set_option("display.max_colwidth", None)
     print("Test 1: Standard evaluation", flush=True)
-    cvr_path = os.path.join('src', 'tests', 'cvr_example_results.csv')
+    cvr_path = os.path.join("src", "tests", "cvr_example_results.csv")
     answers_df = pd.read_csv(cvr_path, dtype={"problem_id": str}, encoding="utf-8")
     key_cvr = {
         "000": "C",
@@ -26,7 +26,7 @@ def main():
     print(output_df.drop(columns=["rationale"]), flush=True)
 
     print("\nTest 2: Evaluation with judge", flush=True)
-    bp_path = os.path.join('src', 'tests', 'bp_example_results.csv')
+    bp_path = os.path.join("src", "tests", "bp_example_results.csv")
     answers_df_judge = pd.read_csv(bp_path, dtype={"problem_id": str}, encoding="utf-8")
     key_bp = {
         "001": ["Empty picture", "Not empty picture"],
@@ -40,8 +40,10 @@ def main():
     print(output_df_judge.drop(columns=["rationale"]), flush=True)
 
     print("\nTest 3: Ensemble evaluation", flush=True)
-    ensemble_path = os.path.join('src', 'tests', 'ensemble_eval_test.csv')
-    answers_df_ensemble = pd.read_csv(ensemble_path, dtype={"problem_id": str}, encoding="utf-8")
+    ensemble_path = os.path.join("src", "tests", "ensemble_eval_test.csv")
+    answers_df_ensemble = pd.read_csv(
+        ensemble_path, dtype={"problem_id": str}, encoding="utf-8"
+    )
     key_ensemble = {
         "013": ["Empty picture", "Not empty picture"],
         "043": ["Triangles", "Circles"],
@@ -54,6 +56,7 @@ def main():
     evaluator_judge.judge_model_object.stop()
 
     print("\nAll tests completed.", flush=True)
+
 
 if __name__ == "__main__":
     main()

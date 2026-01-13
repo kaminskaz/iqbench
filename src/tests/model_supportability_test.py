@@ -1,13 +1,14 @@
-
 import os
 import sys
 from pydantic import BaseModel
 from src.models.vllm import VLLM
 from src.technical.content import ImageContent, TextContent
 
+
 class ResponseSchema(BaseModel):
     shape: str
     confidence: float
+
 
 def main():
 
@@ -26,7 +27,7 @@ def main():
     image_content = ImageContent(relative_path)
     response1 = vllm.ask([text_content, image_content], ResponseSchema)
     print("Response (multimodal):", response1, flush=True)
-    
+
     vllm.stop()
 
     print("\nTest Model 2: OpenGVLab/InternVL3-14B", flush=True)
@@ -41,11 +42,12 @@ def main():
     print("Preparing VLLM", flush=True)
     vllm = VLLM(model_name="Qwen/Qwen2.5-VL-32B-Instruct")
     response3 = vllm.ask([text_content, image_content], ResponseSchema)
-    print("Response (multimodal):", response3, flush=True)  
+    print("Response (multimodal):", response3, flush=True)
 
     vllm.stop()
-    
+
     print("\nAll tests completed.", flush=True)
+
 
 if __name__ == "__main__":
     main()

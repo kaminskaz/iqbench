@@ -1,10 +1,11 @@
-import json
 from dataclasses import dataclass
-from typing import Optional, Dict, Any
+from typing import Optional
+
 
 @dataclass
 class ModelConfig:
     """Configuration for a dataset processor."""
+
     model_name: str
     model_class: str
     max_tokens_limit: int

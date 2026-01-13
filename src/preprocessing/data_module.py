@@ -1,16 +1,15 @@
 import os
 import json
 from pathlib import Path
-import traceback
+import logging
 from typing import Dict, Tuple, Any
 import PIL
 from dotenv import load_dotenv
 from huggingface_hub import snapshot_download, login
+
 from src.technical.configs.dataset_config import DatasetConfig
 from src.preprocessing.processor_factory import ProcessorFactory
 from src.technical.utils import get_config_path
-import logging
-import shutil
 
 
 class DataModule:

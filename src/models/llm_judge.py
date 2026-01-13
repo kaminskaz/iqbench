@@ -1,15 +1,8 @@
-import subprocess
-import time
-from typing import List, Optional, Dict, Type, Any
-import portpicker
-import requests
+from typing import Optional, Type
 import logging
-import sys
-import os
 from pydantic import BaseModel
 
-from src.technical.content import Content, ImageContent, TextContent
-from src.technical.prompt_formatter import PromptFormatter
+from src.technical.content import TextContent
 from src.models.vllm import VLLM
 from src.technical.utils import get_field
 
@@ -20,7 +13,7 @@ class LLMJudge(VLLM):
     def __init__(
         self,
         model_name: str = "mistralai/Mistral-7B-Instruct-v0.3",
-        param_set_number: Optional[int] = None
+        param_set_number: Optional[int] = None,
     ):
         super().__init__(
             model_name=model_name,
@@ -33,31 +26,27 @@ class LLMJudge(VLLM):
         )
 
     def evaluate_similarity(
-        self, 
-        prompt: str, 
-        answer: str, 
-        key: str, 
-        response_schema: Optional[Type[BaseModel]]
+        self,
+        prompt: str,
+        answer: str,
+        key: str,
+        response_schema: Optional[Type[BaseModel]],
     ):
         try:
-            prompt = (
-                f"{prompt}\n"
-                f"Answer: {answer}\n"
-                f"Key Answer: {key}\n"
-            )
+            prompt = f"{prompt}\n" f"Answer: {answer}\n" f"Key Answer: {key}\n"
 
             if response_schema:
-                response = self.ask(
-                    [TextContent(prompt)], response_schema
-                )
-            
+                response = self.ask([TextContent(prompt)], response_schema)
+
             elif self.cpu_local_testing:
                 response = self.ask([TextContent(prompt)])
 
             else:
                 response = self.ask([TextContent(prompt)])
 
-            similarity_label = get_field(response, "similarity_label", "No similarity label provided.")
+            similarity_label = get_field(
+                response, "similarity_label", "No similarity label provided."
+            )
             reasoning = get_field(response, "reasoning", "No reasoning provided.")
 
             return similarity_label, reasoning

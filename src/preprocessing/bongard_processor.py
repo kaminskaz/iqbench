@@ -1,10 +1,10 @@
 import os
 import json
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict
 from PIL import Image, ImageDraw
+
 from src.preprocessing.base_processor import BaseProcessor
 from src.preprocessing.standard_sheetmaker import StandardSheetMaker
-from src.technical.configs.dataset_config import DatasetConfig
 
 
 class BongardProcessor(BaseProcessor):

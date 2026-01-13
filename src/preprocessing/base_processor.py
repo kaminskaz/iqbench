@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import List, Optional, Dict
 from PIL import Image
+
 from src.technical.configs.dataset_config import DatasetConfig
 
 
@@ -34,7 +35,13 @@ class BaseProcessor(ABC):
 
     def is_already_processed(self, problem_id: str) -> bool:
         """Check if a problem has already been processed."""
-        output_path = os.path.join(self.output_base_path, self.dataset_name, "problems", problem_id, "question_panel.png")
+        output_path = os.path.join(
+            self.output_base_path,
+            self.dataset_name,
+            "problems",
+            problem_id,
+            "question_panel.png",
+        )
         return os.path.exists(output_path)
 
     def get_output_dir(self, subfolder: str) -> Path:
@@ -53,7 +60,9 @@ class BaseProcessor(ABC):
     ) -> None:
         """Save the generated question panel image."""
         # Directory structure: data/<dataset_name>/<problem_id>/
-        output_dir = os.path.join(self.output_base_path, self.dataset_name, "problems", problem_id)
+        output_dir = os.path.join(
+            self.output_base_path, self.dataset_name, "problems", problem_id
+        )
         os.makedirs(output_dir, exist_ok=True)
         if classification_panel:
             save_path = os.path.join(output_dir, "classification_panel.png")
@@ -102,9 +111,9 @@ class BaseProcessor(ABC):
         """Standardize problem ID to fixed number of digits."""
         expected = self.config.expected_num_samples
         if expected is None:
-                raise ValueError("expected_num_samples is not set in config")
+            raise ValueError("expected_num_samples is not set in config")
         if not isinstance(expected, int):
-                raise ValueError("expected_num_samples must be an integer")
+            raise ValueError("expected_num_samples must be an integer")
         digits = len(str(self.config.expected_num_samples))
         return str(problem_id).zfill(digits)
 
@@ -128,7 +137,12 @@ class BaseProcessor(ABC):
     ) -> None:
         """Save labeled choice and question images into data/<dataset>/problems/<problem_id>/"""
 
-        base_dir = os.path.join(self.output_base_path, self.dataset_name, "problems", problem_id_standardized)
+        base_dir = os.path.join(
+            self.output_base_path,
+            self.dataset_name,
+            "problems",
+            problem_id_standardized,
+        )
         os.makedirs(base_dir, exist_ok=True)
 
         choices_dir = os.path.join(base_dir, "choices")
@@ -138,11 +152,15 @@ class BaseProcessor(ABC):
             if img is None:
                 continue
             label = string.ascii_uppercase[i] if letters else str(i)
-            out_path = os.path.join(choices_dir, f"{label}.{self.config.image_format.lstrip('.')}")
+            out_path = os.path.join(
+                choices_dir, f"{label}.{self.config.image_format.lstrip('.')}"
+            )
             img.save(out_path)
             self.logger.debug(f"Saved choice {label} to {out_path}")
 
         if question_image is not None:
-            q_path = os.path.join(base_dir, f"question.{self.config.image_format.lstrip('.')}")
+            q_path = os.path.join(
+                base_dir, f"question.{self.config.image_format.lstrip('.')}"
+            )
             question_image.save(q_path)
             self.logger.debug(f"Saved question image to {q_path}")

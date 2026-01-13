@@ -1,8 +1,5 @@
-from typing import Any
 import pandas as pd
-import json
 import logging
-import os
 from pathlib import Path
 
 from src.evaluation.evaluation_base import EvaluationBase
@@ -16,16 +13,12 @@ class EvaluationBasic(EvaluationBase):
         return score
 
     def evaluate(
-            self, 
-            output_df: pd.DataFrame, 
-            key_dict: dict,
-            dataset_category: str = None
-        ):
-        
+        self, output_df: pd.DataFrame, key_dict: dict, dataset_category: str = None
+    ):
+
         for index, row in output_df.iterrows():
             answer = row.get("answer")
             id_ = str(row["problem_id"])
-
 
             if id_ not in key_dict:
                 logger.info(f"ID {id_} not found in key file.")
@@ -57,8 +50,12 @@ class EvaluationBasic(EvaluationBase):
         accuracy = correct / total if total > 0 else 0.0
 
         if "confidence" in evaluated_df.columns and "score" in evaluated_df.columns:
-            avg_confidence = evaluated_df.groupby("score")["confidence"].mean().to_dict()
-            median_confidence = evaluated_df.groupby("score")["confidence"].median().to_dict()
+            avg_confidence = (
+                evaluated_df.groupby("score")["confidence"].mean().to_dict()
+            )
+            median_confidence = (
+                evaluated_df.groupby("score")["confidence"].median().to_dict()
+            )
         else:
             avg_confidence = {}
             median_confidence = {}
@@ -68,5 +65,5 @@ class EvaluationBasic(EvaluationBase):
             "bin_counts": bin_counts,
             "accuracy": accuracy,
             "avg_confidence": avg_confidence,
-            "median_confidence": median_confidence
+            "median_confidence": median_confidence,
         }

@@ -3,11 +3,11 @@ import re
 import json
 import string
 from typing import List, Optional, Dict, Any
+import random
 from PIL import Image
+
 from src.preprocessing.base_processor import BaseProcessor
 from src.technical.configs.dataset_config import DatasetConfig
-from PIL import Image, ImageDraw, ImageFont
-import random
 
 
 class StandardProcessor(BaseProcessor):
@@ -37,7 +37,9 @@ class StandardProcessor(BaseProcessor):
 
     def load_existing_json(self, filename: str) -> Dict[str, Any]:
         """Loads an existing JSON metadata file if it exists."""
-        json_path = os.path.join(self.output_base_path, self.dataset_name, "jsons", filename)
+        json_path = os.path.join(
+            self.output_base_path, self.dataset_name, "jsons", filename
+        )
         if os.path.exists(json_path):
             try:
                 with open(json_path, "r", encoding="utf-8") as f:
@@ -262,7 +264,9 @@ class StandardProcessor(BaseProcessor):
     def load_choice_images(self, problem_id: str) -> List[Optional[Image.Image]]:
         """Load choice images for a problem."""
         images = []
-        choice_dir = os.path.join(self.raw_data_path, problem_id, self.config.choice_images_folder.lstrip("/"))
+        choice_dir = os.path.join(
+            self.raw_data_path, problem_id, self.config.choice_images_folder.lstrip("/")
+        )
 
         for i in range(self.config.num_choices):
             pattern = self.evaluate_regex(self.config.regex_choice_number, i)
@@ -287,7 +291,11 @@ class StandardProcessor(BaseProcessor):
         if not self.config.question_images_folder:
             return None
 
-        question_dir = os.path.join(self.raw_data_path, problem_id, self.config.question_images_folder.lstrip("/"))
+        question_dir = os.path.join(
+            self.raw_data_path,
+            problem_id,
+            self.config.question_images_folder.lstrip("/"),
+        )
         return self.load_image_by_pattern(question_dir, self.config.image_format)
 
     def get_answer_info(self, problem_id: str) -> Dict[str, Any]:
@@ -298,7 +306,9 @@ class StandardProcessor(BaseProcessor):
 
     def load_answer_from_image(self, problem_id: str) -> Dict[str, Any]:
         """Load answer from answer image file."""
-        answer_dir = os.path.join(self.raw_data_path, problem_id, self.config.answer_images_folder.lstrip("/"))
+        answer_dir = os.path.join(
+            self.raw_data_path, problem_id, self.config.answer_images_folder.lstrip("/")
+        )
 
         try:
             for fname in os.listdir(answer_dir):
@@ -318,7 +328,9 @@ class StandardProcessor(BaseProcessor):
         if not self.config.annotations_folder:
             return None
 
-        annot_path = os.path.join(self.raw_data_path, problem_id, self.config.annotations_folder.lstrip("/"))
+        annot_path = os.path.join(
+            self.raw_data_path, problem_id, self.config.annotations_folder.lstrip("/")
+        )
 
         if not os.path.exists(annot_path):
             return None
@@ -398,7 +410,7 @@ class StandardProcessor(BaseProcessor):
             "cvr",
             "problems",
             problem_id_standardized,
-            "blackout"
+            "blackout",
         )
         os.makedirs(blackout_dir, exist_ok=True)
 

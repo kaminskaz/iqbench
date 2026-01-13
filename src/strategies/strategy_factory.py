@@ -1,24 +1,20 @@
-import json
 import logging
-import os
-from pathlib import Path
 from typing import Dict, Any, Optional
 
 from src.strategies.strategy_base import StrategyBase
-
 from src.strategies.classification_strategy import ClassificationStrategy
 from src.strategies.contrastive_strategy import ContrastiveStrategy
 from src.strategies.direct_strategy import DirectStrategy
 from src.strategies.descriptive_strategy import DescriptiveStrategy
 from src.technical.utils import get_dataset_config
 
+
 class StrategyFactory:
     """
     Factory to create and configure a specific strategy based on its name.
     """
-    def __init__(
-        self
-    ):
+
+    def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
 
         # Map strategy names (as used in the command line) to their classes
@@ -33,9 +29,14 @@ class StrategyFactory:
             f"StrategyFactory initialized. {len(self.strategy_map)} strategies available."
         )
 
-
     def create_strategy(
-        self, dataset_name: str, strategy_name: str, model_object: Any, results_dir: str, param_set_number: Optional[int] = None, prompt_number: Optional[int] = 1
+        self,
+        dataset_name: str,
+        strategy_name: str,
+        model_object: Any,
+        results_dir: str,
+        param_set_number: Optional[int] = None,
+        prompt_number: Optional[int] = 1,
     ) -> StrategyBase:
         """
         Method to create, configure, and return a strategy instance.
@@ -73,7 +74,7 @@ class StrategyFactory:
                 results_dir=results_dir,
                 strategy_name=strategy_name.lower(),
                 param_set_number=param_set_number,
-                prompt_number=prompt_number
+                prompt_number=prompt_number,
             )
             self.logger.info(f"Successfully created: {strategy_class.__name__}")
             return strategy_instance

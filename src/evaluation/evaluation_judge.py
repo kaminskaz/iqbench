@@ -13,14 +13,14 @@ from src.technical.utils import shorten_model_name
 
 class EvaluationWithJudge(EvaluationBase):
     def __init__(
-            self, 
-            judge_model_name: str = "mistralai/Mistral-7B-Instruct-v0.3",
-            judge_model_object: Any = None,
-            judge_param_set_number: int = None,
-            prompt: str = None,
-            prompt_number: int = 1,
-            prompt_path: str = None
-        ):
+        self,
+        judge_model_name: str = "mistralai/Mistral-7B-Instruct-v0.3",
+        judge_model_object: Any = None,
+        judge_param_set_number: int = None,
+        prompt: str = None,
+        prompt_number: int = 1,
+        prompt_path: str = None,
+    ):
         self.logger = logging.getLogger(__name__)
         self.prompt_number = prompt_number
         self.judge_model_name = judge_model_name
@@ -28,7 +28,7 @@ class EvaluationWithJudge(EvaluationBase):
 
         if prompt is not None:
             self.prompt = prompt
-            
+
         elif prompt_path is not None:
             if not os.path.exists(prompt_path):
                 error_msg = f"Prompt file not found: {prompt_path}. Check if prompt path is correct."
@@ -36,18 +36,24 @@ class EvaluationWithJudge(EvaluationBase):
             try:
                 with open(prompt_path, "r") as file:
                     self.prompt = file.read()
-                    
+
             except (OSError, IOError) as e:
                 error_msg = f"Error reading prompt file at {prompt_path}: {e}."
                 self.logger.exception(error_msg)
                 raise ValueError(error_msg) from e
         else:
-            prompt_path = os.path.join("prompts", "evaluation", f"evaluation_bongard_{self.prompt_number}.txt")
-            
+            prompt_path = os.path.join(
+                "prompts", "evaluation", f"evaluation_bongard_{self.prompt_number}.txt"
+            )
+
             if not os.path.exists(prompt_path):
-                self.logger.warning(f"Prompt {self.prompt_number} not found. Attempting to default to prompt 1.")
-                prompt_path = os.path.join("prompts", "evaluation", "evaluation_bongard_1.txt")
-                
+                self.logger.warning(
+                    f"Prompt {self.prompt_number} not found. Attempting to default to prompt 1."
+                )
+                prompt_path = os.path.join(
+                    "prompts", "evaluation", "evaluation_bongard_1.txt"
+                )
+
                 if not os.path.exists(prompt_path):
                     error_msg = f"Prompt file not found: {prompt_path}. Default prompt 1 also missing."
                     raise ValueError(error_msg)
@@ -68,7 +74,7 @@ class EvaluationWithJudge(EvaluationBase):
             self.logger.info(f"Initializing judge model: {self.judge_model_name}")
             self.judge_model_object = LLMJudge(
                 model_name=self.judge_model_name,
-                param_set_number=self.judge_param_set_number
+                param_set_number=self.judge_param_set_number,
             )
 
     def evaluate_single_answer(
@@ -78,20 +84,17 @@ class EvaluationWithJudge(EvaluationBase):
         response_schema: BongardEvaluationSchema,
     ):
         return self.judge_model_object.evaluate_similarity(
-            prompt=self.prompt, 
-            answer=answer, 
-            key=key, 
-            response_schema=response_schema
+            prompt=self.prompt, answer=answer, key=key, response_schema=response_schema
         )
 
     def evaluate(
-        self, 
-        output_df: pd.DataFrame, 
+        self,
+        output_df: pd.DataFrame,
         key_dict: dict,
         dataset_category: str,
-        stop_after_evaluation: bool = False
+        stop_after_evaluation: bool = False,
     ):
-    
+
         for index, row in output_df.iterrows():
             answer = row.get("answer")
             id_ = str(row["problem_id"])
@@ -130,13 +133,14 @@ class EvaluationWithJudge(EvaluationBase):
             output_df.at[index, "score"] = score
             output_df.at[index, "judge_rationale"] = judge_rationale
         output_df["judge_model_name"] = shorten_model_name(self.judge_model_name)
-        output_df["judge_model_param_set"] = (self.judge_param_set_number 
-                                              if self.judge_param_set_number is not None 
-                                              else 1)
-        
+        output_df["judge_model_param_set"] = (
+            self.judge_param_set_number
+            if self.judge_param_set_number is not None
+            else 1
+        )
+
         if stop_after_evaluation:
             self.judge_model_object.stop()
-            
 
     def calculate_metrics(self, evaluated_df):
         total = len(evaluated_df)
@@ -166,7 +170,5 @@ class EvaluationWithJudge(EvaluationBase):
             "bin_counts": bin_counts,
             "accuracy": accuracy,
             "avg_confidence": avg_confidence,
-            "median_confidence": median_confidence
+            "median_confidence": median_confidence,
         }
-
-        

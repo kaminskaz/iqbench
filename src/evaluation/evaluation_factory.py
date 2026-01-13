@@ -1,34 +1,35 @@
 import logging
-from typing import Any, Dict, Optional, Type, Tuple
+from typing import Optional, Type
 
 from src.evaluation.evaluation_basic import EvaluationBasic
 from src.evaluation.evaluation_judge import EvaluationWithJudge
 from src.evaluation.evaluation_base import EvaluationBase
 from src.models.llm_judge import LLMJudge
 
-class EvaluationFactory():
+
+class EvaluationFactory:
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
-    
-        self.logger.info(
-            f"EnsembleFactory initialized."
-        )
+
+        self.logger.info(f"EnsembleFactory initialized.")
 
     def which_evaluator(
         self,
         dataset_name: str,
         strategy_name: Optional[str] = None,
-        ensemble: bool = False
+        ensemble: bool = False,
     ) -> Optional[Type[EvaluationBase]]:
-        
+
         if "bp" in dataset_name.lower():
             if not ensemble and strategy_name is None:
-                raise ValueError("strategy_name must be provided for non-ensemble evaluations.")
+                raise ValueError(
+                    "strategy_name must be provided for non-ensemble evaluations."
+                )
             if strategy_name is not None and strategy_name.lower() == "classification":
-                return EvaluationBasic   
+                return EvaluationBasic
             else:
                 return EvaluationWithJudge
-            
+
         return EvaluationBasic
 
     def create_evaluator(
@@ -37,28 +38,33 @@ class EvaluationFactory():
         ensemble: bool = False,
         strategy_name: Optional[str] = None,
         judge_model_object: Optional[LLMJudge] = None,
-        judge_model_name: Optional[str] = 'mistralai/Mistral-7B-Instruct-v0.3',
+        judge_model_name: Optional[str] = "mistralai/Mistral-7B-Instruct-v0.3",
         judge_param_set_number: Optional[int] = None,
         prompt_number: Optional[int] = 1,
         prompt: Optional[str] = None,
     ) -> EvaluationBase:
-        
+
         if not ensemble and strategy_name is None:
-            raise ValueError("strategy_name must be provided for non-ensemble evaluations.")
-        
+            raise ValueError(
+                "strategy_name must be provided for non-ensemble evaluations."
+            )
+
         evaluator_cls = self.which_evaluator(
-            dataset_name=dataset_name,
-            strategy_name=strategy_name,
-            ensemble=ensemble
+            dataset_name=dataset_name, strategy_name=strategy_name, ensemble=ensemble
         )
 
-        evaluator = evaluator_cls(judge_model_object=judge_model_object, judge_model_name=judge_model_name)
+        evaluator = evaluator_cls(
+            judge_model_object=judge_model_object, judge_model_name=judge_model_name
+        )
 
         if isinstance(evaluator, EvaluationWithJudge) and prompt_number is not None:
             evaluator.prompt_number = prompt_number
         if isinstance(evaluator, EvaluationWithJudge) and prompt is not None:
             evaluator.prompt = prompt
-        if isinstance(evaluator, EvaluationWithJudge) and judge_param_set_number is not None:
+        if (
+            isinstance(evaluator, EvaluationWithJudge)
+            and judge_param_set_number is not None
+        ):
             evaluator.judge_param_set_number = judge_param_set_number
-            
+
         return evaluator

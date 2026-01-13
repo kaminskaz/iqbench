@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class EvaluationConfig:
     """Configuration for evaluation process."""
+
     dataset_name: str
     version: str
 
