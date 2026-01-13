@@ -14,6 +14,7 @@ from iqbench.technical.utils import (
     get_dataset_config,
     set_all_seeds,
     get_eval_config_from_path,
+    shorten_model_name,
 )
 from iqbench.technical.configs.evaluation_config import EvaluationConfig
 import pathlib
@@ -275,21 +276,29 @@ class FullPipeline:
 
         # .rglob('*') finds all files and directories recursively
         for subdir in root_path.rglob("*"):
+            for subdir in root_path.rglob("*"):
+                if subdir.is_dir() and ("ver" in subdir.name):
+                    if any(f.is_dir() for f in subdir.iterdir()):
+                        continue
 
-            if subdir.is_dir() and ("ver" in subdir.name):
+                    existing_evals = list(subdir.glob("evaluation_results*"))
+                    should_skip = False
 
-                subfolders = [f for f in subdir.iterdir() if f.is_dir()]
-                if len(subfolders) > 0:
-                    continue
+                    for eval_file in existing_evals:
+                        if eval_file.name == "evaluation_results.csv":
+                            self.logger.info(f"Found generic results in {subdir}. Skipping.")
+                            should_skip = True
+                            break
+                        
+                        if judge_model_name:
+                            short_name = shorten_model_name(judge_model_name)
+                            if short_name and short_name in eval_file.name:
+                                self.logger.info(f"Found specific results for {judge_model_name} in {subdir}. Skipping.")
+                                should_skip = True
+                                break
 
-                eval_file_exists = next(subdir.glob("evaluation_results*"), None)
-
-                if eval_file_exists:
-                    self.logger.info(
-                        f"Found existing results ({eval_file_exists.name}) in {subdir}. Skipping."
-                    )
-                    continue
-
+                    if should_skip:
+                        continue
                 is_ensemble = "ensemble" in str(subdir).lower()
 
                 try:
