@@ -1,17 +1,13 @@
 #!/bin/bash
 #SBATCH -A jrafalko-lab
-#SBATCH --job-name=im_reasoning_test # Tu nazywasz jakoś swój proces, byle co szczerze mało warte bo i tak po nicku ja znaj>
-#SBATCH --time=5:00:00 # dla short to masz max 2h dla long i experimental masz chyba 3-4 dni to jest czas po którym slu>
-#SBATCH --ntasks=1 # tutaj wystarczy 1 zawsze mieć chyba że chcesz multi gpu itp ale zapewne 1 GPU wam wystarczy
-#SBATCH --gpus=1 # Jak nie potrzebujesz GPU to wyrzucasz tą linijke
-#SBATCH --cpus-per-gpu=3 # Ile cpu na jedno gpu ma być w tym konfigu to po prostu ile cpu chcesz mieć mówiłem żeby dawa>
-#SBATCH --mem=64gb # Ile ram chcesz mieć mamy dużo więc nie musisz dawać mało ale bez przesady
-#SBATCH --partition=short # Tutaj podajesz short,long,experimental jedną z tych partycji z której chcesz korzystać sho>
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=01180698@pw.edu.pl
-# Debugging flags
+#SBATCH --job-name=im_reasoning_test 
+#SBATCH --time=5:00:00 
+#SBATCH --ntasks=1 
+#SBATCH --gpus=1
+#SBATCH --cpus-per-gpu=3 
+#SBATCH --mem=64gb 
+#SBATCH --partition=short 
 
-# ---- PARAMETERS ----
 DATASET_NAME=${1:-bp}
 
 echo "Dataset: $DATASET_NAME"

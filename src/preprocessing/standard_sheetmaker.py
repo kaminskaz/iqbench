@@ -188,7 +188,13 @@ class StandardSheetMaker:
 
             results.append(base)
 
-        output_dir = os.path.join(output_base_path, dataset_name, "problems", problem_id_standardized, "filled_choices")
+        output_dir = os.path.join(
+            output_base_path,
+            dataset_name,
+            "problems",
+            problem_id_standardized,
+            "filled_choices",
+        )
         os.makedirs(output_dir, exist_ok=True)
 
         for i, img in enumerate(results):

@@ -1,13 +1,14 @@
-
 import os
 import sys
 from pydantic import BaseModel
 from src.models.vllm import VLLM
 from src.technical.content import ImageContent, TextContent
 
+
 class ResponseSchema(BaseModel):
     shape: str
     confidence: float
+
 
 def main():
     print("Preparing VLLM", flush=True)
@@ -30,7 +31,7 @@ def main():
     image_content = ImageContent(relative_path)
     response2 = vllm.ask([text_content, image_content], ResponseSchema)
     print("Response (multimodal):", response2, flush=True)
-    
+
     vllm.stop()
 
     print("Test 3: Wrong model name", flush=True)

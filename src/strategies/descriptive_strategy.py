@@ -1,8 +1,6 @@
 from traitlets import List
 import os
 from typing import Optional, Dict, Any
-from PIL import Image
-
 
 from src.technical.content import ImageContent, TextContent
 from src.strategies.strategy_base import StrategyBase
@@ -10,6 +8,7 @@ from src.technical.response_schema import DescriptionResponseSchema, ResponseSch
 from src.models.vllm import VLLM
 from src.technical.configs.dataset_config import DatasetConfig
 from src.technical.utils import get_field
+
 
 class DescriptiveStrategy(StrategyBase):
 
@@ -23,13 +22,25 @@ class DescriptiveStrategy(StrategyBase):
         prompt_number: int,
         param_set_number: Optional[int] = None,
     ):
-        super().__init__(dataset_name, model, dataset_config, results_dir, strategy_name, prompt_number=prompt_number, param_set_number=param_set_number)
+        super().__init__(
+            dataset_name,
+            model,
+            dataset_config,
+            results_dir,
+            strategy_name,
+            prompt_number=prompt_number,
+            param_set_number=param_set_number,
+        )
 
         self.descriptions_prompt = self.get_prompt(f"describe", self.prompt_number)
-        self.describe_example_prompt = self.get_prompt(f"describe_example", self.prompt_number)
+        self.describe_example_prompt = self.get_prompt(
+            f"describe_example", self.prompt_number
+        )
         self.descriptions_path = os.path.join(self.results_dir, "descriptions.json")
 
-    def _execute_problem(self, problem_id: str) -> list[Dict[str, str], str, Optional[Dict[str, str]]]:
+    def _execute_problem(
+        self, problem_id: str
+    ) -> list[Dict[str, str], str, Optional[Dict[str, str]]]:
         """
         Executes the logic for a single descriptive problem.
         """
@@ -44,32 +55,36 @@ class DescriptiveStrategy(StrategyBase):
                 choice_image_input = self.get_choice_image(problem_id, image_index=i)
                 index_key = i
             elif self.config.category in {"standard", "choice_only"}:
-                choice_image_input = self.get_choice_image(problem_id, image_index=letter)
+                choice_image_input = self.get_choice_image(
+                    problem_id, image_index=letter
+                )
                 index_key = letter
 
-            descriptions_prompt_with_example = f"{self.descriptions_prompt}\n{self.describe_example_prompt}"
+            descriptions_prompt_with_example = (
+                f"{self.descriptions_prompt}\n{self.describe_example_prompt}"
+            )
 
             contents_to_send_descriptions = [
                 TextContent(descriptions_prompt_with_example),
                 ImageContent(choice_image_input),
             ]
 
-            description_response = self.model.ask(contents_to_send_descriptions, schema=DescriptionResponseSchema)
+            description_response = self.model.ask(
+                contents_to_send_descriptions, schema=DescriptionResponseSchema
+            )
 
-            raw_description = get_field(description_response, 'description', None)
+            raw_description = get_field(description_response, "description", None)
             self.logger.debug(f"Description for choice {index_key}: {raw_description}")
 
             if raw_description:
                 problem_descriptions_dict[index_key] = raw_description
 
-            descriptions.append(f"{index_key}: {raw_description}" if raw_description else None)
+            descriptions.append(
+                f"{index_key}: {raw_description}" if raw_description else None
+            )
 
         all_descriptions_text = "\n\n".join(
-            [
-                desc
-                for desc in descriptions
-                if desc is not None
-            ]
+            [desc for desc in descriptions if desc is not None]
         )
 
         prompt = f"{self.main_prompt}\nDescriptions:\n{all_descriptions_text}\n{self.example_prompt}"
@@ -86,7 +101,7 @@ class DescriptiveStrategy(StrategyBase):
                 contents_to_send = [TextContent(prompt)]
             else:
                 contents_to_send = [TextContent(prompt), ImageContent(image_input)]
-            
+
         response = self.model.ask(contents_to_send, schema=ResponseSchema)
 
         return response, problem_id, problem_descriptions_dict

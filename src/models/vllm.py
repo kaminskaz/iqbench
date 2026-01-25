@@ -19,18 +19,18 @@ from src.technical.utils import get_model_config
 
 logger = logging.getLogger(__name__)
 
+
 class VLLM:
     def __init__(
         self,
         model_name: str = "OpenGVLab/InternVL3-8B",
-        param_set_number: Optional[int] = None
+        param_set_number: Optional[int] = None,
     ):
-        config = get_model_config(
-                model_name, param_set_number=param_set_number)
+        config = get_model_config(model_name, param_set_number=param_set_number)
 
-        assert config.max_tokens > config.max_output_tokens, (
-            "max_tokens must be greater than max_output_tokens."
-        )        
+        assert (
+            config.max_tokens > config.max_output_tokens
+        ), "max_tokens must be greater than max_output_tokens."
 
         self.model_name = model_name
         self.max_tokens = config.max_tokens
@@ -38,7 +38,9 @@ class VLLM:
         self.max_output_tokens = config.max_output_tokens
         self.cpu_local_testing = config.cpu_local_testing
         if self.cpu_local_testing:
-            logger.info("CPU-only mode enabled for this request. Setting schema to None for the purpose of local testing.")
+            logger.info(
+                "CPU-only mode enabled for this request. Setting schema to None for the purpose of local testing."
+            )
 
         port = portpicker.pick_unused_port()
         self.api_key = "NOT-USED"
@@ -50,10 +52,14 @@ class VLLM:
             timeout=3600.0,
             api_key=self.api_key,
             other_args=(
-                "--port", str(port),
-                "--max-model-len", str(config.max_tokens),
-                "--tensor-parallel-size", str(config.tensor_parallel_size),
-                "--gpu-memory-utilization", str(config.gpu_memory_utilization),
+                "--port",
+                str(port),
+                "--max-model-len",
+                str(config.max_tokens),
+                "--tensor-parallel-size",
+                str(config.tensor_parallel_size),
+                "--gpu-memory-utilization",
+                str(config.gpu_memory_utilization),
                 *(
                     ("--chat-template", config.chat_template_path)
                     if config.chat_template_path
@@ -61,7 +67,10 @@ class VLLM:
                 ),
                 "--trust-remote-code",
                 *(
-                    ("--limit-mm-per-prompt", f'{{"image": {config.limit_mm_per_prompt}}}')
+                    (
+                        "--limit-mm-per-prompt",
+                        f'{{"image": {config.limit_mm_per_prompt}}}',
+                    )
                     if config.limit_mm_per_prompt > 0
                     else ()
                 ),
@@ -69,14 +78,12 @@ class VLLM:
                     ("--disable-sliding-window",)
                     if config.disable_sliding_window
                     else ()
-                )
+                ),
             ),
         )
 
         self.client = openai.OpenAI(
-            base_url=f"{self.base_url}/v1",
-            api_key=self.api_key,
-            timeout=60
+            base_url=f"{self.base_url}/v1", api_key=self.api_key, timeout=60
         )
         self.formatter = PromptFormatter()
         logger.info(
@@ -87,13 +94,12 @@ class VLLM:
         return self.model_name
 
     def ask(
-        self, contents: List[Content], 
-        schema: Optional[Type[BaseModel]] = None
+        self, contents: List[Content], schema: Optional[Type[BaseModel]] = None
     ) -> str:
 
         if self.cpu_local_testing and schema is not None:
             schema = None
-            
+
         message = self.formatter.user_message(contents)
 
         response = self.client.chat.completions.create(
@@ -106,7 +112,6 @@ class VLLM:
 
         model_response = _parse_response(response.choices[0].message.content)
         return model_response if model_response else {}
-
 
     def stop(self):
         """Stop the running vLLM server."""
@@ -151,8 +156,7 @@ def launch_vllm_server(
             if line:
                 stdout_buffer.append(line.strip())
                 if any(
-                    k in line.lower()
-                    for k in ["error", "exception", "oom", "cuda", "fatal"]
+                    k in line.lower() for k in ["error", "exception", "oom", "fatal"]
                 ):
                     logger.error(line.strip())
 
@@ -204,7 +208,7 @@ def _parse_response(response):
     if isinstance(response, str):
         text = response.strip()
 
-        match = re.search(r'\{.*\}', text, re.DOTALL)
+        match = re.search(r"\{.*\}", text, re.DOTALL)
         if match:
             try:
                 return json.loads(match.group())
@@ -217,4 +221,3 @@ def _parse_response(response):
             return {"raw": response}
 
     return {"raw": str(response)}
-    

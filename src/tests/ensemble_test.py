@@ -2,28 +2,15 @@ import argparse
 import json
 import sys
 import logging
-import os
-import re
-from pathlib import Path
-from typing import Any, List, Optional
 
-from src.models.llm_judge import LLMJudge
-from src.strategies.strategy_factory import StrategyFactory
-from src.ensemble.ensemble_factory import EnsembleFactory
 from src.models.vllm import VLLM
-from src.technical.utils import get_dataset_config, get_results_directory
-from src.evaluation.evaluation_basic import EvaluationBasic
-from src.evaluation.evaluation_judge import EvaluationWithJudge
-import os
-import gc
-import time
-import torch
+from src.technical.utils import get_dataset_config
 from src.base import FullPipeline
 from src.models.vllm import VLLM
-from src.technical.exceptions import PipelineCriticalError
 
 
 logger = logging.getLogger(__name__)
+
 
 def json_list(value):
     try:
@@ -31,118 +18,20 @@ def json_list(value):
     except json.JSONDecodeError:
         raise argparse.ArgumentTypeError("members_configuration must be valid JSON")
 
-# def run_single_ensemble(
-#         dataset_name: str,
-#         members_configuration: List[List[str]],
-#         type_name: str,
-#         vllm_model_name: Optional[str] = None,
-#         llm_model_name: Optional[str] = None, 
-#         model_object: Optional[VLLM] = None,
-#         prompt_number: Optional[int] = 1
-#     ) -> None:
-#     """
-#     Initializes and runs a single experiment strategy.
-#     """
-#     logger.info(f"Creating ensemble '{type_name}' for dataset '{dataset_name}' with members: {members_configuration}')")
-#     try:
-#         ensemble_factory = EnsembleFactory()
-
-#         if not model_object:
-#             if type_name == "reasoning_with_image" and vllm_model_name:
-#                 logger.info(f"Initializing VLLM model '{vllm_model_name}' for reasoning with image ensemble.")
-#                 model = VLLM(
-#                     model_name=vllm_model_name
-#                 )
-
-#             elif (get_dataset_config(dataset_name).category == "BP" and llm_model_name) or (type_name == "reasoning" and llm_model_name):
-#                 logger.info(f"Initializing LLM model '{llm_model_name}' for ensemble.")
-                
-#                 model = LLMJudge(
-#                     model_name=llm_model_name
-#                 )
-#             else:
-#                 model = None
-#         else:
-#             model = model_object
-        
-#         ensemble = ensemble_factory.create_ensemble(
-#             dataset_name=dataset_name,
-#             members_configuration=members_configuration,
-#             skip_missing=True,
-#             judge_model=model,
-#             type_name=type_name,
-#             prompt_number=prompt_number
-#         )
-        
-#         logger.info("Ensemble created successfully. Running ensemble...")
-#         ensemble.evaluate()
-#         logger.info(f"Ensemble run complete for {dataset_name} / {type_name}.")
-        
-#         if model:
-#             model.stop()
-
-#     except ImportError as e:
-#         logger.error(f"Failed to create ensemble. Does '{type_name}' exist and is it importable? Error: {e}", exc_info=True)
-#         if model_object is None:
-#             model.stop()
-#         sys.exit(1)
-#     except Exception as e:
-#         logger.error(f"An error occurred during the experiment run: {e}", exc_info=True)
-#         if model_object is None:
-#             model.stop()
-#         raise e
-    
-# def run_all_ensembles(dataset):
-#     pipeline = FullPipeline()
-
-#     ### top overall:
-#     top_members_overall = [['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['direct', 'OpenGVLab/InternVL3-8B', '1']]
-
-#     ### strategy ensembles:
-#     direct_ens = [['direct', 'OpenGVLab/InternVL3-8B', '1'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'llava-hf/llava-v1.6-mistral-7b-hf', '1']]
-#     descr_ens = [['descriptive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['descriptive', 'llava-hf/llava-v1.6-mistral-7b-hf', '3'], ['descriptive', 'OpenGVLab/InternVL3-8B', '1']]
-#     contrast_ens = [['contrastive', 'OpenGVLab/InternVL3-8B', '3'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['contrastive', 'llava-hf/llava-v1.6-mistral-7b-hf', '3']]
-#     classif_ens = [['classification', 'OpenGVLab/InternVL3-8B', '1'], ['classification', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['classification', 'llava-hf/llava-v1.6-mistral-7b-hf', '3']]
-
-#     ### model_ensembles
-#     qwen_ens = [['classification', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['descriptive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3']]
-#     llava_ens = [['classification', 'llava-hf/llava-v1.6-mistral-7b-hf', '3'], ['contrastive', 'llava-hf/llava-v1.6-mistral-7b-hf', '3'], ['descriptive', 'llava-hf/llava-v1.6-mistral-7b-hf', '3'], ['direct', 'llava-hf/llava-v1.6-mistral-7b-hf', '1']]
-#     intern_ens = [['classification', 'OpenGVLab/InternVL3-8B', '1'], ['contrastive', 'OpenGVLab/InternVL3-8B', '3'], ['descriptive', 'OpenGVLab/InternVL3-8B', '1'], ['direct', 'OpenGVLab/InternVL3-8B', '1']]
-
-#     if dataset == "bp":
-#         top_members_dataset = [['direct', 'OpenGVLab/InternVL3-8B', '1'], ['direct', 'OpenGVLab/InternVL3-8B', '3'], ['descriptive', 'OpenGVLab/InternVL3-8B', '1'], ['descriptive', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '1']]
-
-#     elif dataset == "cvr":
-#         top_members_dataset = [['classification', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'OpenGVLab/InternVL3-8B', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['classification', 'OpenGVLab/InternVL3-8B', '3']]
-
-#     elif dataset == "raven":
-#         top_members_dataset = [['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['contrastive', 'OpenGVLab/InternVL3-8B', '3']]
-
-#     elif dataset == "marsvqa":
-#         top_members_dataset = [['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['descriptive', 'OpenGVLab/InternVL3-8B', '1']]
-#     else:
-#         raise ValueError(f"Unknown dataset: {dataset}")
-    
-#     configurations = [top_members_overall, top_members_dataset, qwen_ens, llava_ens, intern_ens, direct_ens, descr_ens, contrast_ens]
-#     if dataset != "bp":
-#         configurations.append(classif_ens)
-
-#     model_name = 'Qwen/Qwen2.5-VL-7B-Instruct'
-#     type_names = ["majority","confidence","reasoning","reasoning_with_image"]
-
-#     for config in configurations:
-#         model = VLLM(model_name)
-#         for type_name in type_names:
-#             pipeline.run_ensemble(dataset_name=dataset, members_configuration=config, type_name=type_name, model_object=model)
-#         model.stop()
 
 def seed_and_version_test(dataset):
     pipeline = FullPipeline()
     ### top overall:
-    top_members_overall = [['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['direct', 'OpenGVLab/InternVL3-8B', '1']]
+    top_members_overall = [
+        ["direct", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+        ["contrastive", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+        ["direct", "Qwen/Qwen2.5-VL-7B-Instruct", "1"],
+        ["contrastive", "Qwen/Qwen2.5-VL-7B-Instruct", "1"],
+        ["direct", "OpenGVLab/InternVL3-8B", "1"],
+    ]
     configurations = [top_members_overall]
 
-    model_name = 'Qwen/Qwen2.5-VL-7B-Instruct'
+    model_name = "Qwen/Qwen2.5-VL-7B-Instruct"
     type_names = ["majority"]
     versions = [100, 101, 102]
     seeds = [100, 100, 101]
@@ -155,14 +44,22 @@ def seed_and_version_test(dataset):
             else:
                 model = None
             for type_name in type_names:
-                pipeline.run_ensemble(dataset_name=dataset, members_configuration=config, type_name=type_name, model_object=model, version=ver, seed=seed)
+                pipeline.run_ensemble(
+                    dataset_name=dataset,
+                    members_configuration=config,
+                    type_name=type_name,
+                    model_object=model,
+                    version=ver,
+                    seed=seed,
+                )
             if model:
                 model.stop()
+
 
 def get_config_and_seed(version: int, dataset_name: str, model_number: int = 0):
     """
     Returns a specific configuration and seed based on the version number.
-    
+
     Args:
         version (int): Number of version
         dataset_name (str): Name of the dataset (bp, cvr, raven, marsvqa)
@@ -175,43 +72,105 @@ def get_config_and_seed(version: int, dataset_name: str, model_number: int = 0):
 
     top_members_dataset = []
     if "bp" in dataset_name.lower():
-        top_members_dataset = [['direct', 'OpenGVLab/InternVL3-8B', '1'], ['direct', 'OpenGVLab/InternVL3-8B', '3'], ['descriptive', 'OpenGVLab/InternVL3-8B', '1'], ['descriptive', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '1']]
+        top_members_dataset = [
+            ["direct", "OpenGVLab/InternVL3-8B", "1"],
+            ["direct", "OpenGVLab/InternVL3-8B", "3"],
+            ["descriptive", "OpenGVLab/InternVL3-8B", "1"],
+            ["descriptive", "Qwen/Qwen2.5-VL-7B-Instruct", "1"],
+            ["contrastive", "Qwen/Qwen2.5-VL-7B-Instruct", "1"],
+        ]
     elif dataset_name == "cvr":
-        top_members_dataset = [['classification', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'OpenGVLab/InternVL3-8B', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['classification', 'OpenGVLab/InternVL3-8B', '3']]
+        top_members_dataset = [
+            ["classification", "Qwen/Qwen2.5-VL-7B-Instruct", "1"],
+            ["direct", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+            ["direct", "OpenGVLab/InternVL3-8B", "1"],
+            ["contrastive", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+            ["classification", "OpenGVLab/InternVL3-8B", "3"],
+        ]
     elif dataset_name == "raven":
-        top_members_dataset = [['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['contrastive', 'OpenGVLab/InternVL3-8B', '3']]
+        top_members_dataset = [
+            ["direct", "Qwen/Qwen2.5-VL-7B-Instruct", "1"],
+            ["direct", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+            ["contrastive", "Qwen/Qwen2.5-VL-7B-Instruct", "1"],
+            ["contrastive", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+            ["contrastive", "OpenGVLab/InternVL3-8B", "3"],
+        ]
     elif dataset_name == "marsvqa":
-        top_members_dataset = [['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['descriptive', 'OpenGVLab/InternVL3-8B', '1']]
+        top_members_dataset = [
+            ["contrastive", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+            ["direct", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+            ["direct", "Qwen/Qwen2.5-VL-7B-Instruct", "1"],
+            ["contrastive", "Qwen/Qwen2.5-VL-7B-Instruct", "1"],
+            ["descriptive", "OpenGVLab/InternVL3-8B", "1"],
+        ]
     else:
         raise ValueError(f"Unknown dataset: {dataset_name}")
 
     mapping = {
-        0: [['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['direct', 'OpenGVLab/InternVL3-8B', '1']], # top_members_overall
+        0: [
+            ["direct", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+            ["contrastive", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+            ["direct", "Qwen/Qwen2.5-VL-7B-Instruct", "1"],
+            ["contrastive", "Qwen/Qwen2.5-VL-7B-Instruct", "1"],
+            ["direct", "OpenGVLab/InternVL3-8B", "1"],
+        ],  # top_members_overall
         1: top_members_dataset,
-        2: [['classification', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['descriptive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3']], # qwen
-        3: [['classification', 'llava-hf/llava-v1.6-mistral-7b-hf', '3'], ['contrastive', 'llava-hf/llava-v1.6-mistral-7b-hf', '3'], ['descriptive', 'llava-hf/llava-v1.6-mistral-7b-hf', '3'], ['direct', 'llava-hf/llava-v1.6-mistral-7b-hf', '1']], # llava
-        4: [['classification', 'OpenGVLab/InternVL3-8B', '1'], ['contrastive', 'OpenGVLab/InternVL3-8B', '3'], ['descriptive', 'OpenGVLab/InternVL3-8B', '1'], ['direct', 'OpenGVLab/InternVL3-8B', '1']], # intern
-        5: [['direct', 'OpenGVLab/InternVL3-8B', '1'], ['direct', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['direct', 'llava-hf/llava-v1.6-mistral-7b-hf', '1']], # direct
-        6: [['descriptive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['descriptive', 'llava-hf/llava-v1.6-mistral-7b-hf', '3'], ['descriptive', 'OpenGVLab/InternVL3-8B', '1']], # descriptive
-        7: [['contrastive', 'OpenGVLab/InternVL3-8B', '3'], ['contrastive', 'Qwen/Qwen2.5-VL-7B-Instruct', '3'], ['contrastive', 'llava-hf/llava-v1.6-mistral-7b-hf', '3']], # contrastive
-        8: [['classification', 'OpenGVLab/InternVL3-8B', '1'], ['classification', 'Qwen/Qwen2.5-VL-7B-Instruct', '1'], ['classification', 'llava-hf/llava-v1.6-mistral-7b-hf', '3']] # classification
+        2: [
+            ["classification", "Qwen/Qwen2.5-VL-7B-Instruct", "1"],
+            ["contrastive", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+            ["descriptive", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+            ["direct", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+        ],  # qwen
+        3: [
+            ["classification", "llava-hf/llava-v1.6-mistral-7b-hf", "3"],
+            ["contrastive", "llava-hf/llava-v1.6-mistral-7b-hf", "3"],
+            ["descriptive", "llava-hf/llava-v1.6-mistral-7b-hf", "3"],
+            ["direct", "llava-hf/llava-v1.6-mistral-7b-hf", "1"],
+        ],  # llava
+        4: [
+            ["classification", "OpenGVLab/InternVL3-8B", "1"],
+            ["contrastive", "OpenGVLab/InternVL3-8B", "3"],
+            ["descriptive", "OpenGVLab/InternVL3-8B", "1"],
+            ["direct", "OpenGVLab/InternVL3-8B", "1"],
+        ],  # intern
+        5: [
+            ["direct", "OpenGVLab/InternVL3-8B", "1"],
+            ["direct", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+            ["direct", "llava-hf/llava-v1.6-mistral-7b-hf", "1"],
+        ],  # direct
+        6: [
+            ["descriptive", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+            ["descriptive", "llava-hf/llava-v1.6-mistral-7b-hf", "3"],
+            ["descriptive", "OpenGVLab/InternVL3-8B", "1"],
+        ],  # descriptive
+        7: [
+            ["contrastive", "OpenGVLab/InternVL3-8B", "3"],
+            ["contrastive", "Qwen/Qwen2.5-VL-7B-Instruct", "3"],
+            ["contrastive", "llava-hf/llava-v1.6-mistral-7b-hf", "3"],
+        ],  # contrastive
+        8: [
+            ["classification", "OpenGVLab/InternVL3-8B", "1"],
+            ["classification", "Qwen/Qwen2.5-VL-7B-Instruct", "1"],
+            ["classification", "llava-hf/llava-v1.6-mistral-7b-hf", "3"],
+        ],  # classification
     }
 
-    group_index = version // 10 - model_number*10
-    
+    group_index = version // 10 - model_number * 10
+
     return mapping[group_index], seed
 
-def run_pipeline_for_dataset(dataset: str, pipeline, model_name, model_number = 0):
+
+def run_pipeline_for_dataset(dataset: str, pipeline, model_name, model_number=0):
     """
     Runs the ensemble pipeline and resets the model every 2 runs that require model.
-    
+
     Args:
         dataset (str): Name of the dataset.
         pipeline: The pipeline object.
         model_factory: A function or class that returns a fresh model instance.
     """
     type_names = ["reasoning", "reasoning_with_image", "majority", "confidence"]
-    
+
     # Initialize the first model instance
     model = VLLM(model_name)
     run_counter = 0
@@ -221,7 +180,10 @@ def run_pipeline_for_dataset(dataset: str, pipeline, model_name, model_number = 
     dataset_config = get_dataset_config(dataset)
 
     for type_name in type_names:
-        if type_name in ["reasoning", "reasoning_with_image"] or dataset_config.category == "BP":
+        if (
+            type_name in ["reasoning", "reasoning_with_image"]
+            or dataset_config.category == "BP"
+        ):
             max_range = 80 if dataset_config.category == "BP" else 90
             versions_to_run = (v + offset for v in range(0, max_range, 10))
         else:
@@ -229,41 +191,47 @@ def run_pipeline_for_dataset(dataset: str, pipeline, model_name, model_number = 
 
         for ver in versions_to_run:
             config, seed = get_config_and_seed(ver, dataset, model_number)
-            
+
             pipeline.run_ensemble(
                 dataset_name=dataset,
                 members_configuration=config,
                 type_name=type_name,
                 model_object=model,
                 version=ver,
-                seed=seed
+                seed=seed,
             )
-            
+
             # Increment counter and check for reset
-            if type_name in ["reasoning", "reasoning_with_image"] or dataset_config.category == "BP":
+            if (
+                type_name in ["reasoning", "reasoning_with_image"]
+                or dataset_config.category == "BP"
+            ):
                 run_counter += 1
                 if run_counter % 2 == 0:
                     print(f"--- Resetting model after {run_counter} total runs ---")
                     model.stop()
-                    model = VLLM(model_name) # Replace old model with a fresh one
+                    model = VLLM(model_name)  # Replace old model with a fresh one
 
-def run_pipeline_for_dataset_test(dataset: str, pipeline, model_name, model_number = 0):
+
+def run_pipeline_for_dataset_test(dataset: str, pipeline, model_name, model_number=0):
     type_names = ["reasoning", "reasoning_with_image", "majority", "confidence"]
-    
+
     model = VLLM(model_name)
     run_counter = 0
     offset = model_number * 100
     dataset_config = get_dataset_config(dataset)
 
     for type_name in type_names:
-        is_singular_run = (type_name in ["reasoning", "reasoning_with_image"] or 
-                           dataset_config.category == "BP")
+        is_singular_run = (
+            type_name in ["reasoning", "reasoning_with_image"]
+            or dataset_config.category == "BP"
+        )
 
         versions_to_run = []
 
         if is_singular_run:
-            versions_to_run = [0, 10] 
-            
+            versions_to_run = [0, 10]
+
             if "raven" in dataset.lower() and type_name == "reasoning_with_image":
                 if model_number == 1:
                     versions_to_run.append(30)
@@ -274,16 +242,16 @@ def run_pipeline_for_dataset_test(dataset: str, pipeline, model_name, model_numb
 
         for ver in final_versions:
             config, seed = get_config_and_seed(ver, dataset, model_number)
-            
+
             pipeline.run_ensemble(
                 dataset_name=dataset,
                 members_configuration=config,
                 type_name=type_name,
                 model_object=model,
                 version=ver,
-                seed=seed
+                seed=seed,
             )
-            
+
             # Reset logic for models (only applies to reasoning/BP runs)
             if is_singular_run:
                 run_counter += 1
@@ -292,21 +260,24 @@ def run_pipeline_for_dataset_test(dataset: str, pipeline, model_name, model_numb
                     model.stop()
                     model = VLLM(model_name)
 
+
 import argparse
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Run a single ensemble experiment')
-    parser.add_argument('--dataset_name', type=str, required=True, 
-                        help='Name of the dataset to use (same as in dataset_config.json)')
+    parser = argparse.ArgumentParser(description="Run a single ensemble experiment")
+    parser.add_argument(
+        "--dataset_name",
+        type=str,
+        required=True,
+        help="Name of the dataset to use (same as in dataset_config.json)",
+    )
 
     args = parser.parse_args()
 
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.StreamHandler(sys.stdout)
-        ]
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[logging.StreamHandler(sys.stdout)],
     )
 
     dataset = args.dataset_name
@@ -316,9 +287,8 @@ if __name__ == "__main__":
     # model_name = "OpenGVLab/InternVL3-8B"
     # model_number = 1
 
-    
-    #run_pipeline_for_dataset(dataset, pipeline, model_name, model_number)
+    # run_pipeline_for_dataset(dataset, pipeline, model_name, model_number)
     run_pipeline_for_dataset(dataset, pipeline, model_name, model_number)
-    
-    #run_all_ensembles(dataset)
-    #seed_and_version_test(dataset) PASSED - models always deterministic, no model changes with seed
+
+    # run_all_ensembles(dataset)
+    # seed_and_version_test(dataset) PASSED - models always deterministic, no model changes with seed

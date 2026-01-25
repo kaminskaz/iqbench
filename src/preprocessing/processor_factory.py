@@ -8,9 +8,7 @@ class ProcessorFactory:
     """Factory for creating appropriate processor instances."""
 
     @staticmethod
-    def create_processor(
-        config: DatasetConfig, sheet_maker=None
-    ) -> BaseProcessor:
+    def create_processor(config: DatasetConfig, sheet_maker=None) -> BaseProcessor:
         """Create the appropriate processor based on dataset category."""
         if config.category == "BP":
             return BongardProcessor(config)

@@ -2,32 +2,33 @@ import logging
 import os
 import sys, subprocess
 from typing import Any, List, Optional
-from iqbench.ensemble.ensemble_factory import EnsembleFactory
-from iqbench.evaluation.evaluation_base import EvaluationBase
-from iqbench.evaluation.evaluation_factory import EvaluationFactory
-from iqbench.models.llm_judge import LLMJudge
-from iqbench.models.vllm import VLLM
-from iqbench.preprocessing.data_module import DataModule
-from iqbench.strategies.strategy_factory import StrategyFactory
-from iqbench.technical.utils import (
+from src.ensemble.ensemble_factory import EnsembleFactory
+from src.evaluation.evaluation_base import EvaluationBase
+from src.evaluation.evaluation_factory import EvaluationFactory
+from src.models.llm_judge import LLMJudge
+from src.models.vllm import VLLM
+from src.preprocessing.data_module import DataModule
+from src.strategies.strategy_factory import StrategyFactory
+from src.technical.utils import (
     get_results_directory,
     get_dataset_config,
     set_all_seeds,
     get_eval_config_from_path,
     shorten_model_name,
 )
-from iqbench.technical.configs.evaluation_config import EvaluationConfig
+from src.technical.configs.evaluation_config import EvaluationConfig
 import pathlib
 
 
 class FullPipeline:
     """
-    The primary entry point for the library. Integrates data acquisition, 
+    The primary entry point for the library. Integrates data acquisition,
     model inference, ensemble logic, and evaluation into a unified interface.
     """
+
     def __init__(self):
         """
-        Initializes the FullPipeline with a logger and a placeholder for 
+        Initializes the FullPipeline with a logger and a placeholder for
         background processes (e.g., the Streamlit visualizer).
         """
         self.logger = logging.getLogger(__name__)
@@ -37,11 +38,11 @@ class FullPipeline:
         """
         Handles data acquisition and the complete preprocessing pipeline.
 
-        Ensures data is structured for downstream modules by creating a 
+        Ensures data is structured for downstream modules by creating a
         DataModule instance and executing the preprocessing flow.
 
         Args:
-            download (bool): If True, downloads the dataset from Hugging Face. 
+            download (bool): If True, downloads the dataset from Hugging Face.
                 Requires HF_API_TOKEN if accessing gated datasets.
         """
         data_module = DataModule(load_from_hf=download)
@@ -63,15 +64,15 @@ class FullPipeline:
         """
         Executes a single experiment strategy for a specific model and dataset.
 
-        This method handles the lifecycle of the experiment, including model 
-        initialization via vLLM, directory setup, and execution of strategies 
+        This method handles the lifecycle of the experiment, including model
+        initialization via vLLM, directory setup, and execution of strategies
         (e.g., Direct, Descriptive, Contrastive, or Classification).
 
         Args:
             dataset_name (str): Name of the dataset to use.
             strategy_name (str): Name of the strategy to execute.
             model_name (str): Name of the model (must be compatible with vLLM).
-            model_object (Optional[VLLM]): An existing VLLM instance. If provided, 
+            model_object (Optional[VLLM]): An existing VLLM instance. If provided,
                 skips new model initialization.
             restart_problem_id (Optional[str]): Specific problem ID to resume from.
             restart_version (Optional[str]): Version to restart; defaults to "latest".
@@ -157,12 +158,12 @@ class FullPipeline:
         """
         Aggregates results from multiple models/strategies into an ensemble.
 
-        Supports various aggregation methods including majority voting, confidence 
+        Supports various aggregation methods including majority voting, confidence
         scores, and reasoning-based judging (using an LLM or VLM as a judge).
 
         Args:
             dataset_name (str): Name of the dataset.
-            members_configuration (List[List[str]]): List of members, where each 
+            members_configuration (List[List[str]]): List of members, where each
                 inner list is [strategy_name, model_name, version].
             type_name (str): Type of ensemble logic (e.g., 'reasoning', 'reasoning_with_image').
             vllm_model_name (Optional[str]): VLM judge name for vision-based ensembles.
@@ -248,10 +249,10 @@ class FullPipeline:
         seed: Optional[int] = 42,
     ):
         """
-        Recursively scans a results directory and executes evaluations for 
+        Recursively scans a results directory and executes evaluations for
         any experiment folders missing results.
 
-        This is a utility method to ensure all completed experiments have 
+        This is a utility method to ensure all completed experiments have
         corresponding evaluation metrics without manual triggering.
 
         Args:
@@ -325,12 +326,12 @@ class FullPipeline:
         """
         Evaluates the performance of a single model or ensemble experiment.
 
-        Calculates basic metrics and uses either a key-based comparison or 
+        Calculates basic metrics and uses either a key-based comparison or
         a judge model (for open-ended tasks) to verify answers.
 
         Args:
             config (EvaluationConfig): Configuration object describing the target results.
-            evaluator (Optional[EvaluationBase]): An existing evaluator instance 
+            evaluator (Optional[EvaluationBase]): An existing evaluator instance
                 to reduce overhead for sequential runs.
             seed (Optional[int]): Random seed for the evaluator.
         """
@@ -376,7 +377,7 @@ class FullPipeline:
         """
         Launches the interactive Streamlit dashboard.
 
-        Provides a user-friendly UI for exploring metrics, comparing model 
+        Provides a user-friendly UI for exploring metrics, comparing model
         performance, and browsing experiment results. Starts as a background process.
 
         Args:
@@ -392,7 +393,7 @@ class FullPipeline:
         """
         Terminates the Streamlit background process.
 
-        Closing the browser tab does not stop the Python process; this method 
+        Closing the browser tab does not stop the Python process; this method
         ensures the process is cleanly killed and resources are freed.
         """
         if self._proc and self._proc.poll() is None:

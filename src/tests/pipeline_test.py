@@ -5,6 +5,7 @@ from src.technical.configs.evaluation_config import EvaluationConfig
 from src.preprocessing.standard_processor import StandardProcessor
 from src.preprocessing.data_module import DataModule
 
+
 def main():
     pipeline = FullPipeline()
 
@@ -28,7 +29,7 @@ def main():
     #     vllm_model_name="Qwen/Qwen2.5-VL-3B-Instruct",
     #     llm_model_name="Qwen/Qwen2.5-VL-3B-Instruct"
     # )
-    
+
     # print("Running evaluation...")
     # eval_config = EvaluationConfig(
     #     dataset_name="cvr",
@@ -50,8 +51,9 @@ def main():
 
     print("Launching visualisation...")
     pipeline.visualise()
-    # sleep(30) 
+    # sleep(30)
     # pipeline.stop_visualiser()
+
 
 if __name__ == "__main__":
     main()

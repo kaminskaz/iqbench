@@ -1,14 +1,13 @@
 #!/bin/bash
 #SBATCH -A jrafalko-lab
-#SBATCH --job-name=inz # Tu nazywasz jakoś swój proces, byle co szczerze mało warte bo i tak po nicku ja znajduje mój task
-#SBATCH --time=12:00:00 # dla short to masz max 2h dla long i experimental masz chyba 3-4 dni to jest czas po którym slurm ubja tw>
-#SBATCH --ntasks=1 # tutaj wystarczy 1 zawsze mieć chyba że chcesz multi gpu itp ale zapewne 1 GPU wam wystarczy
-#SBATCH --gpus=1 # Jak nie potrzebujesz GPU to wyrzucasz tą linijke
-#SBATCH --cpus-per-gpu=8 # Ile cpu na jedno gpu ma być w tym konfigu to po prostu ile cpu chcesz mieć mówiłem żeby dawać zawsze mi>
-#SBATCH --mem=64gb # Ile ram chcesz mieć mamy dużo więc nie musisz dawać mało ale bez przesady
-#SBATCH --partition=short # Tutaj podajesz short,long,experimental jedną z tych partycji z której chcesz korzystać shot i long ma>
+#SBATCH --job-name=im_reasoning_test 
+#SBATCH --time=5:00:00 
+#SBATCH --ntasks=1 
+#SBATCH --gpus=1
+#SBATCH --cpus-per-gpu=6 
+#SBATCH --mem=64gb 
+#SBATCH --partition=short 
 
-# ---- PARAMETERS ----
 DATASET_NAME=${1:-bp}
 STRATEGY=${2:-direct}
 MODEL_NAME=${3:-"OpenGVLab/InternVL3-8B"}

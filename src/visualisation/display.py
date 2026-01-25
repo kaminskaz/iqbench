@@ -5,7 +5,12 @@ import pandas as pd
 
 from src.visualisation.plots import create_countplot, create_confidence_boxplot
 from src.visualisation.data_handling import get_present_colors, load_json_safe
-from src.visualisation.ui_helpers import shorten_model_name, safe_display, render_markdown
+from src.visualisation.ui_helpers import (
+    shorten_model_name,
+    safe_display,
+    render_markdown,
+)
+
 
 def show_csv_preview(df: pd.DataFrame) -> None:
     if df.empty:
@@ -20,6 +25,7 @@ def show_csv_preview(df: pd.DataFrame) -> None:
     else:
         cols_to_drop.append("type_name")
     st.dataframe(df.drop(columns=cols_to_drop, errors="ignore"))
+
 
 def setup_layout() -> None:
     st.markdown(
@@ -40,9 +46,8 @@ def setup_layout() -> None:
 def render_cell(value, font_size=18, bold=False):
     weight = "font-weight:bold;" if bold else ""
     st.markdown(
-        f"<p style='{weight} font-size:{font_size}px;'>"
-        f"{safe_display(value)}</p>",
-        unsafe_allow_html=True
+        f"<p style='{weight} font-size:{font_size}px;'>" f"{safe_display(value)}</p>",
+        unsafe_allow_html=True,
     )
 
 
@@ -51,10 +56,12 @@ def centered_st(func):
         _, center, _ = st.columns([1, 8, 1])
         with center:
             return func(*args, **kwargs)
+
     return wrapper
 
 
 # plotting
+
 
 @centered_st
 def plot_judged_answers(df, **kwargs):
@@ -72,7 +79,10 @@ def plot_confidence(df, **kwargs):
 
 # problem display
 
-def show_chosen_problem(df, problem_id, dataset_name, strategy_name, strategy_col="strategy_name"):
+
+def show_chosen_problem(
+    df, problem_id, dataset_name, strategy_name, strategy_col="strategy_name"
+):
     if df.empty:
         st.info("No valid data to display.")
         return
@@ -86,9 +96,13 @@ def show_chosen_problem(df, problem_id, dataset_name, strategy_name, strategy_co
     col1, col2 = st.columns(2)
 
     with col1:
-        img_path = os.path.join(
-            "data", dataset_name, "problems", str(problem_id), "question_panel.png"
-        ) if dataset_name else None
+        img_path = (
+            os.path.join(
+                "data", dataset_name, "problems", str(problem_id), "question_panel.png"
+            )
+            if dataset_name
+            else None
+        )
 
         if img_path and os.path.exists(img_path):
             st.image(img_path, caption=f"{dataset_name} – Problem {problem_id}")
@@ -102,12 +116,12 @@ def show_chosen_problem(df, problem_id, dataset_name, strategy_name, strategy_co
 
 # evaluation summary
 
-def display_evaluation_summary(df, dataset_name, strategy_name, strategy_col="strategy_name", is_ensemble=False):
 
-    df = df[
-        (df["dataset_name"] == dataset_name)
-        & (df[strategy_col] == strategy_name)
-    ]
+def display_evaluation_summary(
+    df, dataset_name, strategy_name, strategy_col="strategy_name", is_ensemble=False
+):
+
+    df = df[(df["dataset_name"] == dataset_name) & (df[strategy_col] == strategy_name)]
 
     if df.empty:
         st.info("No data for this dataset/strategy.")
@@ -117,36 +131,50 @@ def display_evaluation_summary(df, dataset_name, strategy_name, strategy_col="st
     version = df["version"].iloc[0]
 
     base_path = (
-        os.path.join("results", "ensembles", dataset_name, strategy_name, f"ensemble_ver{version}")
-        if is_ensemble else
-        os.path.join("results", dataset_name, strategy_name,
-                     shorten_model_name(model_name), f"ver{version}")
+        os.path.join(
+            "results",
+            "ensembles",
+            dataset_name,
+            strategy_name,
+            f"ensemble_ver{version}",
+        )
+        if is_ensemble
+        else os.path.join(
+            "results",
+            dataset_name,
+            strategy_name,
+            shorten_model_name(model_name),
+            f"ver{version}",
+        )
     )
 
     metrics_path = os.path.join(base_path, "evaluation_results_metrics.json")
     summary_path = os.path.join(base_path, "evaluation_results_summary.json")
     if df["judge_filter_id"].notna().any() and df["judge_filter_id"].iloc[0]:
         judge_model_id = df["judge_filter_id"].iloc[0]
-        metrics_path = os.path.join(base_path, f"evaluation_results_metrics_{judge_model_id}.json")
-        summary_path = os.path.join(base_path, f"evaluation_results_summary_{judge_model_id}.json")
+        metrics_path = os.path.join(
+            base_path, f"evaluation_results_metrics_{judge_model_id}.json"
+        )
+        summary_path = os.path.join(
+            base_path, f"evaluation_results_summary_{judge_model_id}.json"
+        )
     metrics = load_json_safe(metrics_path)
     summary = load_json_safe(summary_path)
 
     if not metrics:
         st.warning(f"Metrics not found at {metrics_path}")
         return
-    
+
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown(f"<h3>Total samples: {safe_display(metrics.get('total', 0))}</h3>",
-                    unsafe_allow_html=True)
-    
+        st.markdown(
+            f"<h3>Total samples: {safe_display(metrics.get('total', 0))}</h3>",
+            unsafe_allow_html=True,
+        )
+
     with col2:
         if dataset_name.lower() == "bp" and strategy_name.lower() != "classification":
-            points_map = {
-                "right": 1.0,
-                "somewhat right": 0.5
-            }
+            points_map = {"right": 1.0, "somewhat right": 0.5}
 
             total_points = 0
             total_count = 0
@@ -155,11 +183,16 @@ def display_evaluation_summary(df, dataset_name, strategy_name, strategy_col="st
                 total_points += pts_per_item * count
                 total_count += count
 
-            st.markdown(f"<h3>Points: {safe_display(total_points):.2f}</h3>", unsafe_allow_html=True)
+            st.markdown(
+                f"<h3>Points: {safe_display(total_points):.2f}</h3>",
+                unsafe_allow_html=True,
+            )
 
         else:
-            st.markdown(f"<h3>Accuracy: {safe_display(metrics.get('accuracy')):.2%}</h3>",
-                        unsafe_allow_html=True)
+            st.markdown(
+                f"<h3>Accuracy: {safe_display(metrics.get('accuracy')):.2%}</h3>",
+                unsafe_allow_html=True,
+            )
 
     if not is_ensemble:
         headers = ["Score", "Count", "Average Confidence", "Median Confidence"]
@@ -172,18 +205,25 @@ def display_evaluation_summary(df, dataset_name, strategy_name, strategy_col="st
         med = metrics.get("median_confidence", {}).get(label, 0)
 
         cols = st.columns([3, 2, 2, 2])
-        with cols[0]: render_cell(label)
-        with cols[1]: render_cell(count)
-        with cols[2]: render_cell(round(avg, 2))
-        with cols[3]: render_cell(round(med, 2))
+        with cols[0]:
+            render_cell(label)
+        with cols[1]:
+            render_cell(count)
+        with cols[2]:
+            render_cell(round(avg, 2))
+        with cols[3]:
+            render_cell(round(med, 2))
 
     if not summary:
         st.warning(f"Summary not found at {summary_path}")
         return
 
-    render_cell("Data completeness", bold=True) 
+    render_cell("Data completeness", bold=True)
 
-    for key, label in [("answers_completeness", "Answers"), ("key_completeness", "Answer key")]:
+    for key, label in [
+        ("answers_completeness", "Answers"),
+        ("key_completeness", "Answer key"),
+    ]:
         section = summary.get(key)
         if not section:
             continue
@@ -194,33 +234,49 @@ def display_evaluation_summary(df, dataset_name, strategy_name, strategy_col="st
         coverage = available / expected if expected else 0
 
         cols = st.columns([3, 2, 2, 2])
-        with cols[0]: render_cell(label)
-        with cols[1]: render_cell(f"{available}/{expected}")
-        with cols[2]: render_cell(f"{coverage:.1%}")
-        with cols[3]: render_cell(f"{missing} missing")
+        with cols[0]:
+            render_cell(label)
+        with cols[1]:
+            render_cell(f"{available}/{expected}")
+        with cols[2]:
+            render_cell(f"{coverage:.1%}")
+        with cols[3]:
+            render_cell(f"{missing} missing")
 
         missing_ids = section.get("missing_problem_ids", [])
         if missing_ids:
             st.markdown(
                 f"<p style='font-size:18px; color:#d62728;'>"
                 f"<i>Missing Problem IDs: {', '.join(missing_ids)}</i></p>",
-                unsafe_allow_html=True
+                unsafe_allow_html=True,
             )
-    
+
 
 # model configuration
+
 
 def show_single_model_config(model_name, dataset_name, strategy_name, version):
     st.subheader("Configuration")
 
-    metadata_path = os.path.join("results", dataset_name, strategy_name,
-                        shorten_model_name(model_name), f"ver{version}", "metadata.json")
+    metadata_path = os.path.join(
+        "results",
+        dataset_name,
+        strategy_name,
+        shorten_model_name(model_name),
+        f"ver{version}",
+        "metadata.json",
+    )
     metadata = load_json_safe(metadata_path)
     if not metadata:
         st.warning(f"Metadata not found at {metadata_path}")
         return
 
-    tech_cfg = load_json_safe(os.path.join("src", "technical", "configs", "models_config.json")) or {}
+    tech_cfg = (
+        load_json_safe(
+            os.path.join("src", "technical", "configs", "models_config.json")
+        )
+        or {}
+    )
     param_sets = tech_cfg.get(model_name, {}).get("param_sets", {})
 
     ps = metadata.get("param_set_number")
@@ -241,7 +297,7 @@ def show_single_model_config(model_name, dataset_name, strategy_name, version):
         ("example_prompt", 150),
         ("describe_prompt", 150),
         ("describe_example_prompt", 150),
-        ("contrast_example_prompt", 150)
+        ("contrast_example_prompt", 150),
     ]
 
     for key, height in prompts:
@@ -259,20 +315,33 @@ def show_single_model_config(model_name, dataset_name, strategy_name, version):
 def show_ensemble_config(dataset_name, type_name, ensemble_version):
     st.subheader("Ensemble Configuration")
 
-    config_path = os.path.join("results", "ensembles", dataset_name, type_name,
-                        f"ensemble_ver{ensemble_version}", "ensemble_config.json")
+    config_path = os.path.join(
+        "results",
+        "ensembles",
+        dataset_name,
+        type_name,
+        f"ensemble_ver{ensemble_version}",
+        "ensemble_config.json",
+    )
     metadata = load_json_safe(config_path)
     if not metadata:
         st.warning(f"Metadata not found at {config_path}")
         return
 
-    tech_cfg = load_json_safe(os.path.join("src", "technical", "configs", "models_config.json")) or {}
+    tech_cfg = (
+        load_json_safe(
+            os.path.join("src", "technical", "configs", "models_config.json")
+        )
+        or {}
+    )
 
     for k in ["ensemble_model", "dataset_name", "dataset_category", "task_type"]:
-        render_markdown(k.replace("_"," ").title(), metadata.get(k))
+        render_markdown(k.replace("_", " ").title(), metadata.get(k))
 
     st.markdown("### Main Prompt")
-    st.text_area("Main Prompt", safe_display(metadata.get("main_prompt", "")), height=300)
+    st.text_area(
+        "Main Prompt", safe_display(metadata.get("main_prompt", "")), height=300
+    )
 
     for mk in sorted(k for k in metadata if k.startswith("member_")):
         member = metadata[mk]
@@ -296,7 +365,14 @@ def show_ensemble_config(dataset_name, type_name, ensemble_version):
 
 # problem × strategy table
 
-def show_problem_strategy_table(df, dataset_name, outcome_col="score", problem_col="problem_id", strategy_col="strategy_name"):
+
+def show_problem_strategy_table(
+    df,
+    dataset_name,
+    outcome_col="score",
+    problem_col="problem_id",
+    strategy_col="strategy_name",
+):
 
     st.subheader("Problem × Strategy Outcome Overview")
 
@@ -315,8 +391,9 @@ def show_problem_strategy_table(df, dataset_name, outcome_col="score", problem_c
     )
 
     styled = pivot.style.applymap(
-        lambda v: f"background-color:{color_map[v]}; color:black"
-        if v in color_map else ""
+        lambda v: (
+            f"background-color:{color_map[v]}; color:black" if v in color_map else ""
+        )
     )
 
     st.dataframe(styled, height=450, use_container_width=True)
