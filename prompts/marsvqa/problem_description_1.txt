@@ -1,0 +1,3 @@
+A standard MaRS problem consists of a 3×3 grid of images where the final cell is left blank.
+The images evolve through systematic transformations—such as rotation, progression, or logical combinations—that apply consistently across rows, columns, or both. These patterns are based on visual features like shape, number, orientation, or shading.
+The objective is to decode these horizontal and vertical rules to select the missing image from a set of options that logically completes the grid.

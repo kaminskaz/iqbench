@@ -15,16 +15,16 @@
 *.temp
 
 # Foldery środowisk wirtualnych Pythona
-venv/
+.venv/
 env/
 
 # Pliki konfiguracyjne lokalne
 .env
 
 # Folder z danymi
-data/
-data_raw/vcog-bench/
-results/
+data*
+results*
+deprecated/ensemble*
 
 # cache
 __pycache__/

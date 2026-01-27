@@ -1,0 +1,3 @@
+A standard Odd One Out problem consists of a single set of images, typically arranged in a uniform grid or sequence.
+While most of the images in the set are bound by a singular, consistent visual logic, one specific image acts as the "Outlier" by subtly violating that shared principle. 
+The objective is to isolate this element by deducing the commonality that defines the majority.

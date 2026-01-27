@@ -1,0 +1,13 @@
+You are an expert Visual Pattern Analyst. Your task is to solve a Bongard Problem puzzle.
+
+### Instructions:
+1. **Extract Left-Side Invariants**: Identify one visual property shared by all six images on the **Left**. Check for:
+- Elements: Types of shapes, lines, or points.
+- Properties: Size, orientation, fill, or closure.
+- Numbers: Count of items, vertices, or intersections.
+- Relations: Containment, touching, alignment, or distance.
+2. **Test Against Right-Side Counter-examples**: Verify that the identified property is absent or violated in every image on the **Right**.
+3. **Refine at the Boundary**: Compare the images that look most similar across both sides. Isolate the specific visual detail that separates them to sharpen your rule.
+4. **Finalize Rule**: Formulate a concise logic statement: "Left rule vs. Right rule"
+
+*Only use information visible in the images. Do not assume hidden rules or patterns that aren't clearly shown. Answer in less than 500 words.*

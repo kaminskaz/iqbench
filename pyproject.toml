@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iqbench"
+version = "0.1.1"
+description = "A framework for comprehensive evaluation of Vision Language Models on visual analogy tasks."
+readme = "README.md"
+requires-python = ">=3.10"
+
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+
+authors = [
+  { name = "Karolina Dunal" },
+  { name = "Zofia Kamińska" }
+]
+
+dependencies = [
+  "streamlit>=1.45.0",
+  "numpy==2.2.6",
+  "pandas==2.2.3",
+  "matplotlib==3.10.3",
+  "seaborn==0.13.2",
+  "Pillow==11.1.0",
+  "torch==2.8.0",
+  "scipy==1.15.2",
+  "vllm==0.11.0",
+  "pydantic==2.12.3",
+  "openai==2.2.0",
+  "portpicker==1.6.0",
+  "requests==2.31.0",
+  "transformers==4.55.2",
+  "python-dotenv",
+  "traitlets>=5.0.0"
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"iqbench.technical.configs" = ["*.json"]
+"iqbench.prompts" = ["**/*.txt"]
