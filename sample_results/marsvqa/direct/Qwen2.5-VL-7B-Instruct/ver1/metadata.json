@@ -1,0 +1,33 @@
+{
+    "dataset": "marsvqa",
+    "strategy": "direct",
+    "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+    "param_set_number": 1,
+    "prompt_number": 1,
+    "config": {
+        "image_format": ".jpeg",
+        "task_type": "close-ended",
+        "category": "standard",
+        "data_folder": "data_raw/vcog-bench/marsvqa",
+        "num_choices": 4,
+        "choice_images_folder": "/choice/image",
+        "regex_choice_number": "T{image_index+1}",
+        "shuffle": true,
+        "hf_repo_id": "vcog/vcog-bench",
+        "hf_repo_type": "dataset",
+        "question_images_folder": "/question/image",
+        "answer_images_folder": "/answer/image",
+        "annotations_folder": "/choice/text/annotation.json",
+        "regex_answer_number": "T{image_index+1}",
+        "solutions_folder": null,
+        "true_idx": 0,
+        "expected_num_samples": 100
+    },
+    "problem_description_prompt": "A standard MaRS problem consists of a 3\u00d73 grid of images where the final cell is left blank.\nThe images evolve through systematic transformations\u2014such as rotation, progression, or logical combinations\u2014that apply consistently across rows, columns, or both. These patterns are based on visual features like shape, number, orientation, or shading.\nThe objective is to decode these horizontal and vertical rules to select the missing image from a set of options that logically completes the grid.",
+    "sample_answer_prompt": "A, B, C...",
+    "question_prompt": "You are an expert Visual Pattern Analyst. Your task is to solve a MaRS puzzle based on the entire problem image.\n\n### Instructions:\n1. **Decomposition**: Identify all individual attributes present in the grid (e.g., number of shapes, orientation, shading/fill, size, and position).\n2. **Horizontal Analysis**: Examine the first and second rows. Determine the logic governing the transition from the first cell to the second, and the second to the third.\n3. **Vertical Analysis**: Examine the columns to verify if the horizontal rule holds or if a vertical-specific pattern exists.\n4. **Rule Synthesis**: Formulate a clear, unified rule that explains the entire grid\u2019s progression.\n5. **Predictive Modeling**: Based on your rule, describe exactly what the missing image (bottom-right cell) should look like before looking at the provided options.\n6. **Final Matching**: Compare your detailed description to options A\u2013D and select the perfect match.\n\n*Only use information visible in the images. Do not assume hidden rules or patterns that aren't clearly shown. Answer in less than 500 words.*",
+    "describe_prompt": null,
+    "example_prompt": "### Output Format:\nYou must output valid JSON. Do not add markdown or conversational text. Three fields:\n- answer: Answer to the problem. Letter (A-D) identifying which image best completes the sequence based on full problem analysis, comparisons between shapes, colors, orientations, and relations in rows and columns of the matrix.\n- confidence: Confidence in your answer, ranging from 0.0 to 1.0. (1.0 meaning absolutely confident, 0.5 meaning not so sure, 0 meaning purely guessing)\n- rationale: Short version of the rationale for your answer.",
+    "describe_example_prompt": null,
+    "contrast_example_prompt": null
+}

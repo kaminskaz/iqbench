@@ -1,0 +1,33 @@
+{
+    "dataset": "marsvqa",
+    "strategy": "contrastive",
+    "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+    "param_set_number": 1,
+    "prompt_number": 3,
+    "config": {
+        "image_format": ".jpeg",
+        "task_type": "close-ended",
+        "category": "standard",
+        "data_folder": "data_raw/vcog-bench/marsvqa",
+        "num_choices": 4,
+        "choice_images_folder": "/choice/image",
+        "regex_choice_number": "T{image_index+1}",
+        "shuffle": true,
+        "hf_repo_id": "vcog/vcog-bench",
+        "hf_repo_type": "dataset",
+        "question_images_folder": "/question/image",
+        "answer_images_folder": "/answer/image",
+        "annotations_folder": "/choice/text/annotation.json",
+        "regex_answer_number": "T{image_index+1}",
+        "solutions_folder": null,
+        "true_idx": 0,
+        "expected_num_samples": 100
+    },
+    "problem_description_prompt": "A standard MaRS problem consists of a 3×3 grid of images where the final cell is left blank.\nThe images evolve through systematic transformations—such as rotation, progression, or logical combinations—that apply consistently across rows, columns, or both. These patterns are based on visual features like shape, number, orientation, or shading.\nThe objective is to decode these horizontal and vertical rules to select the missing image from a set of options that logically completes the grid.",
+    "sample_answer_prompt": "A, B, C...",
+    "question_prompt": "You are an expert Visual Pattern Analyst. Your task is to synthesize the provided textual description of the 3×3 grid with the visual candidate options (A–D) to identify the correct solution.\n\n### Instructions:\nSynthesize the provided textual description of the matrix with the visual candidate options to identify the single letter (A, B, C, or D) that represents a perfect morphological and relational match for the missing cell.\n\n*Only use information visible in the candidate images and provided in the grid description. Do not infer any hidden rules, patterns, or details not explicitly stated.\nAnswer in less than 500 words.*",
+    "describe_prompt": "You are an expert Visual Pattern Analyst. Your task is to provide a high-precision, technical description of a 3x3 visual matrix. \nYou will focus specifically on the contrastive transformations occurring across rows and columns to define the logic of the grid.\n\n### Instructions:\nProvide a comprehensive, high-precision technical description of the 3x3 matrix by detailing the specific morphological, spatial, and chromatic transformations that occur across all rows and columns.\n\n*Only use information visible in the image. Do not assume hidden rules or patterns that aren't clearly shown.\nAnswer in less than 500 words.*",
+    "example_prompt": "### Output Format:\nYou must output valid JSON. Do not add markdown or conversational text. Three fields:\n- answer: Answer to the problem. Letter (A-D) identifying which of the presented choice images best completes the sequence matrix described. \n- confidence: Confidence in your answer, ranging from 0.0 to 1.0. (1.0 meaning absolutely confident, 0.5 meaning not so sure, 0 meaning purely guessing, etc.)\n- rationale: Short version of the rationale for your answer.\n\n### Example 1:\n{\n\"answer\": \"C\",\n\"confidence\": 0.96,\n\"rationale\": \"Across each row, the shape gains one additional element from left to right, and the missing panel must continue this progression. Option C correctly adds the next element while preserving shape type and orientation, unlike the other options.\"\n}\n\n### Example 2:\n{\n\"answer\": \"A\",\n\"confidence\": 0.91,\n\"rationale\": \"In each column, the pattern alternates between filled and outlined shapes while maintaining the same geometry. Option A is the only choice that matches this alternating fill rule and the established spatial alignment.\"\n}",
+    "describe_example_prompt": null,
+    "contrast_example_prompt": "### Output Format:\nYou must output valid JSON. Do not add markdown or conversational text. One field:\n- description: Detailed description of the question matrix focusing on the contrasts between rows and columns.\n\n### Example:\n{\n    \"description\": \"Contrasts and Differences\n### The images can be contrasted based on several key features:\n** Presence of Shapes and Colors**:\n- Triangle: Images A and D are the only ones containing a triangle (both are Red). Images B and C do not contain any triangles.\n- Dark Green Shapes: Images A and B contain Dark Green shapes (Square in A; Star and Square in B). Images C and D contain no Dark Green shapes.\n- Red Shapes: Images A, C, and D contain Red shapes. Image B is the only one with no Red shapes.\n- Blue Shapes: Images B, C, and D contain Blue shapes. Image A is the only one with no Blue shapes.\n**Star Shape Differences**:\n- Images A and D each contain only one single-colored star (Red in A, Blue in D).\n- Image B is unique because its star is Dark Green.\n- Image C is unique because it contains two stars (one Red, one Blue) and is the only image with two shapes of the same type.\n**Compositional Contrasts**:\n- A vs. B: A has Red/Dark Green shapes and a Triangle, but no Blue shapes. B has Blue/Dark Green shapes and no Triangle.\n- A vs. C: A has a Triangle and a Dark Green shape, but no Blue shapes. C has no Triangle or Dark Green shapes, but has two Blue shapes.\n- A vs. D: Both have a Red star, a Red triangle, and a single square. A's square is Dark Green, while D's square is Blue. A has no Blue shapes, while D has two Blue shapes.\n- B vs. C: B has Dark Green shapes and no Red shapes. C has Red shapes and no Dark Green shapes. B has a square as its only Blue shape, while C has two Blue shapes (Star and Square).\n- B vs. D: B has Dark Green shapes and no Red shapes/Triangles. D has Red shapes/Triangles and no Dark Green shapes. Both have Blue squares.\n- C vs. D: C is the only image with two stars, and the only image where a shape type is represented by two colors (Red and Blue stars). D is the only image with a Red triangle and a Blue star/square combination. Both contain no Dark Green shapes and two Blue shapes.\n\n**Relative Position**:\nThe shapes' relative positions are generally consistent across the images, with one shape centered at the top and two shapes positioned below it, forming an approximately inverted triangle:\n- The top shape is always a star (A, B, C) or a square (D).\n- In A, the Red star is at the top.\n- In B, the Blue square is at the top.\n- In C, the Red star is at the top.\n- In D, the Blue square is at the top.\n- The two bottom shapes are always a combination of the other two shapes/colors.”,\n}\n"
+}

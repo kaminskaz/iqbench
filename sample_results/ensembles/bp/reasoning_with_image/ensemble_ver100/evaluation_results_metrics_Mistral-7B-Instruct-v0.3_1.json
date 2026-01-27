@@ -1,0 +1,12 @@
+{
+    "total": 100,
+    "bin_counts": {
+        "Right": 3,
+        "Somewhat right": 77,
+        "Somewhat wrong": 19,
+        "Wrong": 1
+    },
+    "accuracy": 0.03,
+    "avg_confidence": {},
+    "median_confidence": {}
+}

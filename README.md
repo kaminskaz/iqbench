@@ -195,7 +195,6 @@ Arguments:
 * `seed (Optional[int])`: Random seed for reproducibility.
 
 ```python
-pipeline = FullPipeline()
 pipeline.run_ensemble(
     dataset_name="cvr",
     members_configuration=[["direct", "Qwen/Qwen2.5-VL-3B-Instruct", "1"], ["classification", "OpenGVLab/InternVL3-8B", "1"]],

@@ -1,0 +1,33 @@
+{
+    "dataset": "raven",
+    "strategy": "contrastive",
+    "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+    "param_set_number": 1,
+    "prompt_number": 3,
+    "config": {
+        "image_format": ".jpeg",
+        "task_type": "close-ended",
+        "category": "standard",
+        "data_folder": "data_raw/vcog-bench/raven",
+        "num_choices": 8,
+        "choice_images_folder": "/choice/image",
+        "regex_choice_number": "{image_index}.jpeg",
+        "shuffle": false,
+        "hf_repo_id": "vcog/vcog-bench",
+        "hf_repo_type": "dataset",
+        "question_images_folder": "/question/image",
+        "answer_images_folder": "/answer/image",
+        "annotations_folder": "/choice/text/annotation.json",
+        "regex_answer_number": "{image_index}.jpeg",
+        "solutions_folder": null,
+        "true_idx": null,
+        "expected_num_samples": 100
+    },
+    "problem_description_prompt": "A standard RAVEN problem consists of a 3×3 grid of images where the final cell is left blank.\nThe images evolve through systematic transformations—such as rotation, progression, or logical combinations—that apply consistently across rows, columns, or both. These patterns are based on visual features like shape, number, orientation, or shading.\nThe objective is to decode these horizontal and vertical rules to select the missing image from a set of options that logically completes the grid.",
+    "sample_answer_prompt": "A, B, C, D, E...",
+    "question_prompt": "You are an expert Visual Pattern Analyst. Your task is to synthesize the provided textual description of the 3×3 grid with the visual candidate options (A–H) to identify the correct solution.\n\n### Instructions:\nSynthesize the provided textual description of the matrix with the visual candidate options to identify the single letter (A, B, C, or D) that represents a perfect morphological and relational match for the missing cell.\n\n*Only use information visible in the candidate images and provided in the grid description. Do not infer any hidden rules, patterns, or details not explicitly stated.\nAnswer in less than 500 words.*",
+    "describe_prompt": "You are an expert Visual Pattern Analyst. Your task is to provide a high-precision, technical description of a 3x3 visual matrix. \nYou will focus specifically on the contrastive transformations occurring across rows and columns to define the logic of the grid.\n\n### Instructions:\nProvide a comprehensive, high-precision technical description of the 3x3 matrix by detailing the specific morphological and spatial transformations that occur across all rows and columns.\n\n*Only use information visible in the image. Do not assume hidden rules or patterns that aren't clearly shown.\nAnswer in less than 500 words.*",
+    "example_prompt": "### Output Format:\nYou must output valid JSON. Do not add markdown or conversational text. Three fields:\n- answer: Answer to the problem. Letter (A-H) identifying which of the presented choice images best completes the sequence matrix described. \n- confidence: Confidence in your answer, ranging from 0.0 to 1.0. (1.0 meaning absolutely confident, 0.5 meaning not so sure, 0 meaning purely guessing, etc.)\n- rationale: Short version of the rationale for your answer.\n\n### Example 1:\n{\n\"answer\": \"H\",\n\"confidence\": 0.96,\n\"rationale\": \"Across each row, the shape gains one additional element from left to right, and the missing panel must continue this progression. Option H correctly adds the next element while preserving shape type and orientation, unlike the other options.\"\n}\n\n### Example 2:\n{\n\"answer\": \"A\",\n\"confidence\": 0.91,\n\"rationale\": \"In each column, the pattern alternates between filled and outlined shapes while maintaining the same geometry. Option A is the only choice that matches this alternating fill rule and the established spatial alignment.\"\n}",
+    "describe_example_prompt": null,
+    "contrast_example_prompt": "### Output Format:\nYou must output valid JSON. Do not add markdown or conversational text. One field:\n- description: Detailed description of the question matrix focusing on the contrasts between rows and columns.\n\n### Example:\n{\n    \"description\": \"Contrasts and Differences ### The images can be contrasted based on several key features:\n**Number of Internal Shapes**:\n- Single Shape: Images A, B, C, D, F, and H all contain only one small shape inside the triangle.\n- Multiple Shapes: Image E contains three shapes, and image G contains four shapes. This sharply contrasts E and G with all other images.\n**Type of Internal Shape(s) (in Single-Shape Images)**:\n- Square: Images A, D, and F feature a square.\n- Triangle: Image B features a triangle.\n- Hexagon: Image C features a hexagon.\n- Circle: Image H features a circle.\n- ** Color/Fill of Internal Shape(s)**:\n- Black/Solid Fill: Images A, B, C, D, F, and H feature solid black shapes.\n- Gray/Multiple Colors: Images E and G feature shapes with varying shades of gray (dark gray, light gray) and, in the case of E, a white/unfilled triangle.\n**Location/Position of the Single Internal Shape**:\n- Near Top: Images B, D, and H place their single shape near the top of the large triangle.\n- Near Lower-Left: Images A and C place their single shape near the lower-left area.\n- Near Center-Right: Image F places its single shape toward the center-right.\n**Complexity/Variety**:\n- Images A, B, C, D, F, and H are the simplest, each featuring only one black shape. They differ primarily in the shape type (square vs. triangle vs. hexagon vs. circle) and position. For example, A (square, lower-left) contrasts with D (square, top) and F (square, center-right) based on position, and with B (triangle) or C (hexagon) based on shape.\n- Images E and G are the most complex. E contrasts with G by having fewer shapes (3 vs 4) and including a white/unfilled triangle, while G features only filled, non-triangular shapes (hexagons, pentagons, squares).\n\",\n}\n"
+}

@@ -1,0 +1,33 @@
+{
+    "dataset": "bp",
+    "strategy": "direct",
+    "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+    "param_set_number": 1,
+    "prompt_number": 1,
+    "config": {
+        "image_format": ".png",
+        "task_type": "open-ended",
+        "category": "BP",
+        "data_folder": "/content/drive/MyDrive/inz/inzynierka/data_raw/bp",
+        "num_choices": 12,
+        "choice_images_folder": "",
+        "regex_choice_number": "{image_index}.png",
+        "shuffle": true,
+        "hf_repo_id": null,
+        "hf_repo_type": "dataset",
+        "question_images_folder": null,
+        "answer_images_folder": null,
+        "annotations_folder": null,
+        "regex_answer_number": null,
+        "solutions_folder": "/solutions.json",
+        "true_idx": null,
+        "expected_num_samples": 100
+    },
+    "problem_description_prompt": "A classic Bongard Problem consists of twelve framed images arranged in two sets: **Left** and **Right** (six images on each side).\nThe six images on the **Left** all satisfy a specific, common property, while the six images on the **Right** serve as counter-examples that specifically lack or contradict that property.\nThe property is never based on the order of the images within one side, only on their visual content: patterns, relationships, and visual features such as shape, color, arrangement, or number.\nThe objective is to identify the property based on the visual clues.",
+    "sample_answer_prompt": "**Left** Rule vs. **Right** Rule",
+    "question_prompt": "You are an expert Visual Pattern Analyst. Your task is to solve a Bongard Problem puzzle.\n\n### Instructions:\n1. **Extract Left-Side Invariants**: Identify one visual property shared by all six images on the **Left**. Check for:\n- Elements: Types of shapes, lines, or points.\n- Properties: Size, orientation, fill, or closure.\n- Numbers: Count of items, vertices, or intersections.\n- Relations: Containment, touching, alignment, or distance.\n2. **Test Against Right-Side Counter-examples**: Verify that the identified property is absent or violated in every image on the **Right**.\n3. **Refine at the Boundary**: Compare the images that look most similar across both sides. Isolate the specific visual detail that separates them to sharpen your rule.\n4. **Finalize Rule**: Formulate a concise logic statement: \"Left rule vs. Right rule\"\n\n*Only use information visible in the images. Do not assume hidden rules or patterns that aren't clearly shown. Answer in less than 500 words.*",
+    "describe_prompt": null,
+    "example_prompt": "### Output Format:\nYou must output valid JSON. Do not add markdown or conversational text. Three fields:\n- answer: Answer to the problem. \"Left rule vs. Right rule\" based on full problem analysis, **Left** and **Right** side panel comparisons.\n- confidence: Confidence in your answer, ranging from 0.0 to 1.0. (1.0 meaning absolutely confident, 0.5 meaning not so sure, 0.0 meaning purely guessing, etc.)\n- rationale: Short version of the rationale for your answer.\n",
+    "describe_example_prompt": null,
+    "contrast_example_prompt": null
+}

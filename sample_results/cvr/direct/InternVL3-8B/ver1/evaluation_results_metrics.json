@@ -1,0 +1,16 @@
+{
+    "total": 100,
+    "bin_counts": {
+        "Right": 38,
+        "Wrong": 62
+    },
+    "accuracy": 0.38,
+    "avg_confidence": {
+        "Right": 0.9460526315789473,
+        "Wrong": 0.9427419354838709
+    },
+    "median_confidence": {
+        "Right": 0.95,
+        "Wrong": 0.95
+    }
+}

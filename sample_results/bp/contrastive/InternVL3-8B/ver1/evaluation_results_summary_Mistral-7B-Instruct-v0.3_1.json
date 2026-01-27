@@ -1,0 +1,46 @@
+{
+    "answers_completeness": {
+        "row_ids_with_any_missing": [],
+        "row_ids_fully_missing": [],
+        "missing_count_per_column": {
+            "problem_id": 0,
+            "answer": 0,
+            "confidence": 0,
+            "rationale": 0,
+            "raw_response": 0
+        },
+        "missing_ratio_per_column": {
+            "problem_id": 0.0,
+            "answer": 0.0,
+            "confidence": 0.0,
+            "rationale": 0.0,
+            "raw_response": 0.0
+        },
+        "expected_num_samples": 100,
+        "missing_problem_ids": [
+            "000"
+        ],
+        "num_missing_problem_ids": 1,
+        "descriptions_completeness": {
+            "problem_ids_with_missing_descriptions": {},
+            "num_problem_ids_with_missing_descriptions": 0
+        }
+    },
+    "key_completeness": {
+        "row_ids_with_any_missing": [],
+        "row_ids_fully_missing": [],
+        "missing_count_per_column": {
+            "problem_id": 0,
+            "answer": 0
+        },
+        "missing_ratio_per_column": {
+            "problem_id": 0.0,
+            "answer": 0.0
+        },
+        "expected_num_samples": 100,
+        "missing_problem_ids": [
+            "000"
+        ],
+        "num_missing_problem_ids": 1
+    }
+}

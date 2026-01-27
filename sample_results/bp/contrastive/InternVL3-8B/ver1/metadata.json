@@ -1,0 +1,33 @@
+{
+    "dataset": "bp",
+    "strategy": "contrastive",
+    "model": "OpenGVLab/InternVL3-8B",
+    "param_set_number": 1,
+    "prompt_number": 1,
+    "config": {
+        "image_format": ".png",
+        "task_type": "open-ended",
+        "category": "BP",
+        "data_folder": "data_raw/bp",
+        "num_choices": 12,
+        "choice_images_folder": "",
+        "regex_choice_number": "{image_index}.png",
+        "shuffle": true,
+        "hf_repo_id": null,
+        "hf_repo_type": "dataset",
+        "question_images_folder": null,
+        "answer_images_folder": null,
+        "annotations_folder": null,
+        "regex_answer_number": null,
+        "solutions_folder": "/solutions.json",
+        "true_idx": null,
+        "expected_num_samples": 100
+    },
+    "problem_description_prompt": "A classic Bongard Problem consists of twelve framed images arranged in two sets: **Left** and **Right** (six images on each side).\nThe six images on the **Left** all satisfy a specific, common property, while the six images on the **Right** serve as counter-examples that specifically lack or contradict that property.\nThe property is never based on the order of the images within one side, only on their visual content: patterns, relationships, and visual features such as shape, color, arrangement, or number.\nThe objective is to identify the property based on the visual clues.",
+    "sample_answer_prompt": "**Left** Rule vs. **Right** Rule",
+    "question_prompt": "You are an expert Visual Pattern Analyst. Your task is to perform a contrastive logical analysis of six image pair descriptions to identify the core rule of a Bongard Problem.\n\n### Instructions:\n1. **Extract Local Differences**: For each pair description (0\u20135), identify the specific visual difference between the \"Left\" description and the \"Right\" description. Focus on changes in count, geometry, or spatial arrangement.\n2. **Synthesize the Global Invariant**: Look across all six \"Left\" descriptions to find one constant property shared by all. Simultaneously, ensure this property is consistently violated or inverted in all \"Right\" descriptions.\n3. **Test the Hypothesis**: Re-read every pair description through the lens of your proposed rule. If the rule fails to explain even one pair, discard it and pivot to a different category (e.g., from shape to topology).\n4. **Isolate the Binary Logic**: Define the final rule as a clear, mutually exclusive contrast (\"Left rule vs. Right rule\").\n\n*Only use information provided in the descriptions. Do not infer any hidden rules, patterns, or details not explicitly stated. Answer in less than 500 words.*",
+    "describe_prompt": "You are an expert Visual Pattern Analyst. Your task is to describe the objective differences between the provided images to facilitate a contrastive analysis of the problem.\n\n### Instructions:\n1. **Object Inventory**: List every visible object in each image (lines, polygons, dots). Treat an all-white image as a valid image.\n2. **Attribute Audit**: For each object, specify its Size (relative), Color/Fill (solid, hollow, shaded), and Shape (geometric or irregular).\n3. **Relational Mapping**: Describe spatial or functional relationships. Are objects nested (inside/outside), touching, aligned, or varying in quantity?\n4. **Contrastive Isolation**: Identify the specific feature present in one image but absent or modified in the other. Avoid high-level interpretation; focus purely on the visual delta.\n\n*Only use information visible in the image. Do not assume hidden rules or patterns that aren't clearly shown. Answer in less than 200 words.*",
+    "example_prompt": "### Output Format:\nYou must output valid JSON. Do not add markdown or conversational text. Three fields:\n- answer: Answer to the problem. \"Left rule vs. Right rule\" based on solely on the descriptions of differences between images from the **Left** and **Right** panels. \n- confidence: Confidence in your answer, ranging from 0.0 to 1.0. (1.0 meaning absolutely confident, 0.5 meaning not so sure, 0 meaning purely guessing, etc.)\n- rationale: Short version of the rationale for your answer.\n",
+    "describe_example_prompt": null,
+    "contrast_example_prompt": "### Output Format:\nYou must output valid JSON. Do not add markdown or conversational text. One field:\n- description: Detailed description of differences between the two images. First one represents **Left** and second represents **Right**. Must use labels \u201cLeft\u201d and  Right\u201d  when referring to a certain image."
+}

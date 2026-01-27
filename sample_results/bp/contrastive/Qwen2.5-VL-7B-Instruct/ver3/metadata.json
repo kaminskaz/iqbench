@@ -1,0 +1,33 @@
+{
+    "dataset": "bp",
+    "strategy": "contrastive",
+    "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+    "param_set_number": 1,
+    "prompt_number": 3,
+    "config": {
+        "image_format": ".png",
+        "task_type": "open-ended",
+        "category": "BP",
+        "data_folder": "data_raw/bp",
+        "num_choices": 12,
+        "choice_images_folder": "",
+        "regex_choice_number": "{image_index}.png",
+        "shuffle": true,
+        "hf_repo_id": null,
+        "hf_repo_type": "dataset",
+        "question_images_folder": null,
+        "answer_images_folder": null,
+        "annotations_folder": null,
+        "regex_answer_number": null,
+        "solutions_folder": "/solutions.json",
+        "true_idx": null,
+        "expected_num_samples": 100
+    },
+    "problem_description_prompt": "A classic Bongard Problem consists of twelve framed images arranged in two sets: **Left** and **Right** (six images on each side).\nThe six images on the **Left** all satisfy a specific, common property, while the six images on the **Right** serve as counter-examples that specifically lack or contradict that property.\nThe property is never based on the order of the images within one side, only on their visual content: patterns, relationships, and visual features such as shape, color, arrangement, or number.\nThe objective is to identify the property based on the visual clues.",
+    "sample_answer_prompt": "**Left** Rule vs. **Right** Rule",
+    "question_prompt": "You are an expert Visual Pattern Analyst. Your task is to perform a contrastive logical analysis of six image pair descriptions to identify the core rule of a Bongard Problem.\n\n### Instructions:\nSynthesize the provided image pair descriptions to define a single, mutually exclusive logical rule that consistently differentiates all **Left** descriptions from all **Right** descriptions.\n\n*Only use information provided in the descriptions. Do not infer any hidden rules, patterns, or details not explicitly stated. Answer in less than 500 words.*",
+    "describe_prompt": "You are an expert Visual Pattern Analyst. Your task is to describe the objective differences between the provided images to facilitate a contrastive analysis of the problem.\n\n### Instructions:\nProvide a direct contrastive analysis of the images by identifying all objective visual differences regarding object attributes, spatial configurations, and feature counts.\n\n*Only use information visible in the image. Do not assume hidden rules or patterns that aren't clearly shown. Answer in less than 200 words.*",
+    "example_prompt": "### Output Format:\nYou must output valid JSON. Do not add markdown or conversational text. Three fields:\n- answer: Answer to the problem. Left rule vs. Right rule based on descriptions of differences between images from the Left and Right panels. \n- confidence: Confidence in your answer, ranging from 0.0 to 1.0. (1.0 meaning absolutely confident, 0.5 meaning not so sure, 0 meaning purely guessing, etc.)\n- rationale: Short rationale for your answer.\n\n### Example 1:\n{\n    \"answer\": \"Multiple objects vs. Single object\",\n    \"confidence\": 0.97,\n    \"rationale\": \"All images in the Left panel contain more than one distinct object, while every image in the Right panel contains exactly one object, with no exceptions across the panels.\",\n}\n\n### Example 2:\n{\n    \"answer\": \"Filled shapes vs. Outlined shapes\",\n    \"confidence\": 0.95,\n    \"rationale\": \"All images in the Left panel contain at least one filled shape, whereas every image in the Right panel consists only of outlined shapes, with no filled regions present.\"\n}\n",
+    "describe_example_prompt": null,
+    "contrast_example_prompt": "### Output Format:\nYou must output valid JSON. Do not add markdown or conversational text. One field:\n- description: Detailed description of differences between the two images. First one represents **Left** and second represents **Right**. Must use labels “Left” and  Right”  when referring to a certain image.\n\n### Example:\n{\n    \"description\": \"The Left image contains a small, stylized, outlined triangle shape, which appears to be pointing downwards and slightly to the left. The rest of the image is white space. The Right image contains a single, larger, irregular, curved shape that is also outlined in black. This shape has no sharp corners, is generally horizontal, and resembles a small, elongated blob or cloud. The shapes in Left and Right are fundamentally different: Left is a geometric shape (triangle), while Right is an organic/irregular shape. Both shapes are black outlines on a white background.\",\n}"
+}

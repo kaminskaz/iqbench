@@ -1,0 +1,33 @@
+{
+    "dataset": "cvr",
+    "strategy": "direct",
+    "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+    "param_set_number": 1,
+    "prompt_number": 1,
+    "config": {
+        "image_format": ".png",
+        "task_type": "close-ended",
+        "category": "choice_only",
+        "data_folder": "data_raw/vcog-bench/cvr",
+        "num_choices": 4,
+        "choice_images_folder": "/choice/image",
+        "regex_choice_number": "sub_image_{image_index+1}.png",
+        "shuffle": true,
+        "hf_repo_id": "vcog/vcog-bench",
+        "hf_repo_type": "dataset",
+        "question_images_folder": null,
+        "answer_images_folder": "/answer/image",
+        "annotations_folder": null,
+        "regex_answer_number": "sub_image_{image_index+1}.png",
+        "solutions_folder": null,
+        "true_idx": 3,
+        "expected_num_samples": 100
+    },
+    "problem_description_prompt": "A standard Odd One Out problem consists of a single set of images, typically arranged in a uniform grid or sequence.\nWhile most of the images in the set are bound by a singular, consistent visual logic, one specific image acts as the \"Outlier\" by subtly violating that shared principle. \nThe objective is to isolate this element by deducing the commonality that defines the majority.",
+    "sample_answer_prompt": "A, B, C...",
+    "question_prompt": "You are an expert Visual Pattern Analyst. Your task is solve and Odd One Out problem.\n\n### Instructions:\n1. **Scan for Morphological Invariants**: Analyze the physical structure of the shapes across the set. Focus on:\n- Complexity: Number of \"limbs,\" protrusions, or branches.\n- Geometry: The ratio of organic curves to sharp, geometric angles.\n- Topology: Presence or number of internal voids (holes).\n2. **Assess Spatial & Color Logic**: Evaluate how the shapes are placed and colored. Check for:\n- Positional Rules: Alignment, rotation, or specific proximity to the frame boundaries.\n- Chromatic Patterns: Color-coding based on shape complexity or specific palettes (e.g., warm vs. cold).\n3. **Establish the \"Majority Rule\"**: Formulate a singular, consistent principle that applies to all images except one.\n4. **Isolate and Verify the Outlier**: Identify the specific image that violates the Majority Rule. Ensure the violation is distinct and not shared by any other image in the set.\n\n*Only use information visible in the images. Do not assume hidden rules or patterns that aren't clearly shown. Answer in less than 500 words.*",
+    "describe_prompt": null,
+    "example_prompt": "### Output Format:\nYou must output valid JSON. Do not add markdown or conversational text. Three fields:\n- answer: Answer to the problem. Letter (A-D) identifying the odd image based on full problem analysis, comparisons between shapes, colors, orientations, relations.\n- confidence: Confidence in your answer, ranging from 0.0 to 1.0. (1.0 meaning absolutely confident, 0.5 meaning not so sure, 0 meaning purely guessing, etc.)\n- rationale: Short version of the rationale for your answer.\n",
+    "describe_example_prompt": null,
+    "contrast_example_prompt": null
+}
