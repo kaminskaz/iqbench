@@ -1,0 +1,33 @@
+{
+    "dataset": "cvr",
+    "strategy": "direct",
+    "model": "Qwen/Qwen2.5-VL-7B-Instruct",
+    "param_set_number": 1,
+    "prompt_number": 3,
+    "config": {
+        "image_format": ".png",
+        "task_type": "close-ended",
+        "category": "choice_only",
+        "data_folder": "data_raw/vcog-bench/cvr",
+        "num_choices": 4,
+        "choice_images_folder": "/choice/image",
+        "regex_choice_number": "sub_image_{image_index+1}.png",
+        "shuffle": true,
+        "hf_repo_id": "vcog/vcog-bench",
+        "hf_repo_type": "dataset",
+        "question_images_folder": null,
+        "answer_images_folder": "/answer/image",
+        "annotations_folder": null,
+        "regex_answer_number": "sub_image_{image_index+1}.png",
+        "solutions_folder": null,
+        "true_idx": 3,
+        "expected_num_samples": 100
+    },
+    "problem_description_prompt": "A standard Odd One Out problem consists of a single set of images, typically arranged in a uniform grid or sequence.\nWhile most of the images in the set are bound by a singular, consistent visual logic, one specific image acts as the \"Outlier\" by subtly violating that shared principle. \nThe objective is to isolate this element by deducing the commonality that defines the majority.",
+    "sample_answer_prompt": "A, B, C...",
+    "question_prompt": "You are an expert Visual Pattern Analyst. Your task is solve and Odd One Out problem.\n\n### Instructions:\nIdentify the unique \"Odd One Out\" by establishing a singular majority rule based on structural, spatial, or chromatic consistency and isolating the specific image that violates this principle.\n\n*Only use information visible in the images. Do not assume hidden rules or patterns that aren't clearly shown. Answer in less than 500 words.*",
+    "describe_prompt": null,
+    "example_prompt": "### Output Format:\nYou must output valid JSON. Do not add markdown or conversational text. Three fields:\n- answer: Answer to the problem. Letter (A-D) identifying the odd image based on full problem analysis, comparisons between shapes, colors, orientations, relations.\n- confidence: Confidence in your answer, ranging from 0.0 to 1.0. (1.0 meaning absolutely confident, 0.5 meaning not so sure, 0 meaning purely guessing, etc.)\n- rationale: Short version of the rationale for your answer.\n\n### Example 1:\n{\n    \"answer\": \"B\",\n    \"confidence\": 0.97,\n    \"rationale\": \"Image B is the odd one out because all other images contain shapes of the same color, while image B includes shapes of two different colors, breaking the shared color-consistency rule.\",\n}\n\n### Example 2:\n{\n    \"answer\": \"D\",\n    \"confidence\": 0.85,\n    \"rationale\": \"Image D is the odd one out because the remaining images contain single centered shape, whereas image D contains multiple shapes, violating the common structure.\"\n}",
+    "describe_example_prompt": null,
+    "contrast_example_prompt": null
+}

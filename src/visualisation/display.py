@@ -31,10 +31,10 @@ def setup_layout() -> None:
     st.markdown(
         """
         <style>
-            .main { max-width: 90% !important; }
+            .main { max-width: 85% !important; }
             .block-container {
                 padding-top: 2rem;
-                max-width: 90% !important;
+                max-width: 85% !important;
             }
         </style>
         """,
@@ -53,7 +53,7 @@ def render_cell(value, font_size=18, bold=False):
 
 def centered_st(func):
     def wrapper(*args, **kwargs):
-        _, center, _ = st.columns([1, 8, 1])
+        _, center, _ = st.columns([1.5, 8, 1.5])
         with center:
             return func(*args, **kwargs)
 
@@ -118,7 +118,7 @@ def show_chosen_problem(
 
 
 def display_evaluation_summary(
-    df, dataset_name, strategy_name, strategy_col="strategy_name", is_ensemble=False
+    df, dataset_name, strategy_name, strategy_col="strategy_name", is_ensemble=False, results_dir="results"
 ):
 
     df = df[(df["dataset_name"] == dataset_name) & (df[strategy_col] == strategy_name)]
@@ -132,7 +132,7 @@ def display_evaluation_summary(
 
     base_path = (
         os.path.join(
-            "results",
+            results_dir,
             "ensembles",
             dataset_name,
             strategy_name,
@@ -140,7 +140,7 @@ def display_evaluation_summary(
         )
         if is_ensemble
         else os.path.join(
-            "results",
+            results_dir,
             dataset_name,
             strategy_name,
             shorten_model_name(model_name),
@@ -255,11 +255,11 @@ def display_evaluation_summary(
 # model configuration
 
 
-def show_single_model_config(model_name, dataset_name, strategy_name, version):
+def show_single_model_config(model_name, dataset_name, strategy_name, version, results_dir="results"):
     st.subheader("Configuration")
 
     metadata_path = os.path.join(
-        "results",
+        results_dir,
         dataset_name,
         strategy_name,
         shorten_model_name(model_name),
@@ -312,11 +312,11 @@ def show_single_model_config(model_name, dataset_name, strategy_name, version):
         st.json(tech_cfg.get(model_name, {}))
 
 
-def show_ensemble_config(dataset_name, type_name, ensemble_version):
+def show_ensemble_config(dataset_name, type_name, ensemble_version, results_dir="results"):
     st.subheader("Ensemble Configuration")
 
     config_path = os.path.join(
-        "results",
+        results_dir,
         "ensembles",
         dataset_name,
         type_name,

@@ -11,6 +11,7 @@ from src.visualisation.display import *
 class StreamlitVisualiser:
     def __init__(self, csv_path: str):
         self.csv_path = csv_path
+        self.results_dir = os.path.dirname(csv_path)
         self.df = load_results(csv_path)
         if not self.df.empty:
             self.df = prepare_columns(self.df)
@@ -122,6 +123,7 @@ class StreamlitVisualiser:
             strategy_name=selected_strategy,
             strategy_col=strategy_col,
             is_ensemble=is_ensemble,
+            results_dir=self.results_dir,
         )
 
         st.divider()
@@ -148,12 +150,14 @@ class StreamlitVisualiser:
                 model_name=df_dataset["model_name"].iloc[0],
                 strategy_name=selected_strategy,
                 version=df_dataset["version"].iloc[0],
+                results_dir=self.results_dir,
             )
         else:
             show_ensemble_config(
                 dataset_name=selected_dataset,
                 type_name=selected_strategy,
                 ensemble_version=df_dataset["version"].iloc[0],
+                results_dir=self.results_dir,
             )
 
 

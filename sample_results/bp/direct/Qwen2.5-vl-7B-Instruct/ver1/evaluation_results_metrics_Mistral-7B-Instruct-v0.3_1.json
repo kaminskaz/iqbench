@@ -1,0 +1,25 @@
+{
+    "total": 100,
+    "bin_counts": {
+        "Right": 7,
+        "Somewhat right": 61,
+        "Somewhat wrong": 29,
+        "Unclear": 1,
+        "Wrong": 2
+    },
+    "accuracy": 0.07,
+    "avg_confidence": {
+        "Right": 0.9285714285714286,
+        "Somewhat right": 0.9557377049180328,
+        "Somewhat wrong": 0.9568965517241379,
+        "Unclear": 0.9,
+        "Wrong": 1.0
+    },
+    "median_confidence": {
+        "Right": 0.9,
+        "Somewhat right": 1.0,
+        "Somewhat wrong": 1.0,
+        "Unclear": 0.9,
+        "Wrong": 1.0
+    }
+}
