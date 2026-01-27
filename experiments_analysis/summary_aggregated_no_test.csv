@@ -1,0 +1,227 @@
+type_name,dataset_name,model_name,ens_members_config_number,avg_acc
+reasoning_with_image,raven,Qwen7B,3.0,0.85
+majority,raven,No judge,0.0,0.843
+reasoning_with_image,raven,Qwen7B,1.0,0.83
+reasoning_with_image,raven,Qwen7B,7.0,0.83
+majority,raven,No judge,1.0,0.828
+reasoning,raven,Intern8B,0.0,0.82
+reasoning,raven,Intern8B,1.0,0.81
+reasoning,raven,Qwen7B,0.0,0.81
+reasoning,raven,Intern8B,2.0,0.81
+reasoning_with_image,raven,Qwen7B,5.0,0.8
+majority,raven,No judge,2.0,0.793
+reasoning_with_image,raven,Qwen7B,6.0,0.79
+reasoning_with_image,raven,Qwen7B,0.0,0.79
+reasoning_with_image,raven,Qwen7B,8.0,0.78
+reasoning,raven,Qwen7B,1.0,0.78
+reasoning_with_image,raven,Qwen7B,2.0,0.77
+reasoning_with_image,raven,Intern8B,2.0,0.76
+reasoning_with_image,raven,Intern8B,1.0,0.75
+reasoning_with_image,raven,Intern8B,0.0,0.73
+reasoning_with_image,raven,Qwen7B,4.0,0.73
+confidence,raven,No judge,0.0,0.637
+confidence,raven,No judge,1.0,0.617
+reasoning,raven,Qwen7B,2.0,0.59
+reasoning_with_image,raven,Intern8B,7.0,0.46
+reasoning_with_image,bp,Qwen7B,1.0,0.455
+reasoning,cvr,Qwen7B,1.0,0.45
+majority,cvr,No judge,1.0,0.45
+confidence,bp,Qwen7B,1.0,0.445
+majority,raven,No judge,5.0,0.442
+reasoning,bp,Qwen7B,1.0,0.44
+confidence,marsvqa,No judge,1.0,0.438
+reasoning_with_image,bp,Intern8B,1.0,0.435
+reasoning,cvr,Intern8B,1.0,0.43
+reasoning_with_image,marsvqa,Qwen7B,0.0,0.43
+confidence,raven,No judge,5.0,0.42800000000000005
+confidence,bp,Intern8B,1.0,0.425
+reasoning_with_image,bp,Qwen7B,2.0,0.425
+majority,bp,Intern8B,1.0,0.42
+majority,cvr,No judge,2.0,0.418
+confidence,bp,Qwen7B,4.0,0.415
+reasoning_with_image,bp,Qwen7B,4.0,0.415
+confidence,bp,Qwen7B,5.0,0.415
+reasoning,bp,Intern8B,6.0,0.415
+reasoning_with_image,bp,Intern8B,0.0,0.415
+reasoning,raven,Qwen7B,7.0,0.41
+reasoning_with_image,cvr,Qwen7B,1.0,0.41
+reasoning,raven,Intern8B,7.0,0.41
+majority,bp,Intern8B,6.0,0.405
+confidence,bp,Intern8B,6.0,0.405
+confidence,raven,No judge,7.0,0.40499999999999997
+majority,marsvqa,No judge,0.0,0.40199999999999997
+confidence,bp,Intern8B,0.0,0.4
+reasoning_with_image,marsvqa,Intern8B,0.0,0.4
+reasoning_with_image,marsvqa,Qwen7B,4.0,0.4
+reasoning_with_image,cvr,Intern8B,1.0,0.4
+reasoning,cvr,Qwen7B,5.0,0.4
+reasoning,marsvqa,Intern8B,1.0,0.4
+reasoning,bp,Qwen7B,2.0,0.4
+reasoning,bp,Intern8B,1.0,0.4
+reasoning,cvr,Intern8B,5.0,0.4
+reasoning,bp,Qwen7B,0.0,0.395
+reasoning_with_image,bp,Qwen7B,6.0,0.395
+majority,bp,Qwen7B,1.0,0.395
+reasoning_with_image,bp,Qwen7B,0.0,0.395
+majority,cvr,No judge,0.0,0.394
+reasoning_with_image,bp,Qwen7B,7.0,0.39
+reasoning_with_image,bp,Qwen7B,3.0,0.39
+reasoning_with_image,bp,Intern8B,5.0,0.39
+majority,bp,Qwen7B,6.0,0.39
+reasoning,cvr,Qwen7B,0.0,0.39
+reasoning,cvr,Intern8B,0.0,0.39
+reasoning,cvr,Intern8B,2.0,0.39
+reasoning,marsvqa,Intern8B,0.0,0.39
+reasoning_with_image,cvr,Intern8B,2.0,0.39
+reasoning,bp,Qwen7B,6.0,0.385
+reasoning,bp,Qwen7B,4.0,0.385
+majority,bp,Intern8B,0.0,0.385
+majority,bp,Qwen7B,4.0,0.385
+reasoning_with_image,bp,Intern8B,4.0,0.385
+reasoning_with_image,bp,Intern8B,2.0,0.385
+confidence,marsvqa,No judge,0.0,0.383
+reasoning_with_image,cvr,Intern8B,0.0,0.38
+reasoning,bp,Qwen7B,5.0,0.38
+reasoning,bp,Intern8B,0.0,0.38
+confidence,bp,Qwen7B,6.0,0.38
+reasoning,bp,Intern8B,2.0,0.38
+reasoning,cvr,Qwen7B,6.0,0.38
+reasoning,cvr,Qwen7B,2.0,0.38
+reasoning,raven,Intern8B,5.0,0.38
+reasoning_with_image,cvr,Qwen7B,5.0,0.38
+majority,marsvqa,No judge,1.0,0.379
+confidence,bp,Intern8B,7.0,0.375
+reasoning_with_image,bp,Intern8B,6.0,0.375
+confidence,bp,Qwen7B,3.0,0.37
+reasoning_with_image,marsvqa,Qwen7B,8.0,0.37
+majority,bp,Qwen7B,0.0,0.37
+majority,bp,Intern8B,2.0,0.37
+confidence,bp,Qwen7B,0.0,0.37
+reasoning,raven,Qwen7B,5.0,0.37
+reasoning_with_image,cvr,Intern8B,4.0,0.37
+majority,cvr,No judge,5.0,0.366
+majority,raven,No judge,7.0,0.365
+confidence,bp,Intern8B,5.0,0.365
+majority,bp,Qwen7B,2.0,0.365
+majority,bp,Qwen7B,3.0,0.365
+reasoning_with_image,bp,Qwen7B,5.0,0.365
+confidence,bp,Qwen7B,2.0,0.365
+confidence,cvr,No judge,0.0,0.365
+reasoning,bp,Qwen7B,3.0,0.365
+majority,cvr,No judge,4.0,0.361
+confidence,bp,Intern8B,4.0,0.36
+confidence,bp,Qwen7B,7.0,0.36
+reasoning_with_image,cvr,Qwen7B,0.0,0.36
+confidence,bp,Intern8B,2.0,0.36
+reasoning_with_image,marsvqa,Qwen7B,6.0,0.36
+reasoning_with_image,cvr,Qwen7B,4.0,0.36
+reasoning_with_image,marsvqa,Qwen7B,1.0,0.36
+majority,cvr,No judge,8.0,0.355
+reasoning,bp,Qwen7B,7.0,0.355
+reasoning_with_image,bp,Intern8B,3.0,0.355
+majority,marsvqa,No judge,7.0,0.354
+reasoning_with_image,cvr,Qwen7B,2.0,0.35
+reasoning_with_image,marsvqa,Intern8B,1.0,0.35
+reasoning,marsvqa,Qwen7B,7.0,0.35
+reasoning,marsvqa,Qwen7B,1.0,0.35
+majority,bp,Qwen7B,5.0,0.35
+reasoning_with_image,marsvqa,Qwen7B,2.0,0.35
+reasoning_with_image,marsvqa,Qwen7B,7.0,0.35
+reasoning,cvr,Intern8B,4.0,0.35
+reasoning,bp,Intern8B,5.0,0.35
+reasoning,bp,Intern8B,4.0,0.35
+confidence,cvr,No judge,5.0,0.34900000000000003
+majority,bp,Intern8B,4.0,0.345
+majority,bp,Intern8B,7.0,0.345
+reasoning_with_image,marsvqa,Qwen7B,5.0,0.34
+reasoning_with_image,bp,Intern8B,7.0,0.34
+reasoning_with_image,marsvqa,Qwen7B,3.0,0.34
+reasoning,cvr,Qwen7B,8.0,0.34
+majority,bp,Intern8B,5.0,0.34
+majority,bp,Qwen7B,7.0,0.34
+reasoning,bp,Intern8B,3.0,0.34
+confidence,cvr,No judge,2.0,0.337
+confidence,bp,Intern8B,3.0,0.335
+majority,cvr,No judge,6.0,0.33399999999999996
+reasoning,cvr,Intern8B,8.0,0.33
+reasoning,bp,Intern8B,7.0,0.33
+reasoning,marsvqa,Qwen7B,2.0,0.33
+reasoning,marsvqa,Qwen7B,0.0,0.33
+reasoning_with_image,cvr,Intern8B,5.0,0.33
+reasoning,cvr,Qwen7B,7.0,0.33
+reasoning,cvr,Intern8B,6.0,0.33
+reasoning,marsvqa,Qwen7B,5.0,0.32
+reasoning_with_image,cvr,Qwen7B,6.0,0.32
+reasoning_with_image,cvr,Intern8B,6.0,0.32
+reasoning_with_image,marsvqa,Intern8B,7.0,0.32
+reasoning_with_image,marsvqa,Intern8B,2.0,0.32
+reasoning,marsvqa,Intern8B,7.0,0.32
+confidence,cvr,No judge,1.0,0.319
+majority,bp,Intern8B,3.0,0.315
+reasoning_with_image,raven,Intern8B,5.0,0.31
+reasoning_with_image,raven,Intern8B,6.0,0.31
+reasoning,cvr,Qwen7B,4.0,0.31
+reasoning,marsvqa,Intern8B,5.0,0.31
+reasoning_with_image,cvr,Qwen7B,7.0,0.31
+confidence,cvr,No judge,6.0,0.305
+confidence,marsvqa,No judge,5.0,0.302
+majority,marsvqa,No judge,2.0,0.296
+reasoning,marsvqa,Intern8B,2.0,0.29
+reasoning,marsvqa,Intern8B,3.0,0.29
+reasoning,marsvqa,Qwen7B,4.0,0.29
+reasoning_with_image,cvr,Qwen7B,3.0,0.29
+majority,cvr,No judge,7.0,0.281
+reasoning,marsvqa,Qwen7B,3.0,0.28
+reasoning_with_image,marsvqa,Intern8B,5.0,0.28
+reasoning_with_image,cvr,Intern8B,7.0,0.28
+reasoning_with_image,cvr,Intern8B,8.0,0.28
+reasoning,cvr,Intern8B,7.0,0.28
+confidence,cvr,No judge,4.0,0.279
+confidence,marsvqa,No judge,7.0,0.275
+majority,marsvqa,No judge,4.0,0.275
+confidence,cvr,No judge,8.0,0.274
+majority,marsvqa,No judge,5.0,0.273
+reasoning,marsvqa,Qwen7B,8.0,0.27
+majority,marsvqa,No judge,3.0,0.265
+reasoning_with_image,marsvqa,Intern8B,8.0,0.26
+reasoning_with_image,cvr,Qwen7B,8.0,0.26
+confidence,marsvqa,No judge,8.0,0.252
+reasoning_with_image,cvr,Intern8B,3.0,0.25
+confidence,marsvqa,No judge,4.0,0.25
+reasoning_with_image,marsvqa,Intern8B,4.0,0.25
+reasoning,raven,Intern8B,6.0,0.25
+reasoning,marsvqa,Qwen7B,6.0,0.25
+reasoning_with_image,raven,Intern8B,4.0,0.25
+confidence,marsvqa,No judge,6.0,0.24900000000000003
+majority,raven,No judge,6.0,0.24700000000000003
+reasoning,raven,Qwen7B,6.0,0.24
+majority,marsvqa,No judge,8.0,0.238
+confidence,marsvqa,No judge,2.0,0.23399999999999999
+reasoning_with_image,marsvqa,Intern8B,3.0,0.23
+reasoning,marsvqa,Intern8B,4.0,0.23
+reasoning,cvr,Intern8B,3.0,0.23
+reasoning,marsvqa,Intern8B,8.0,0.23
+reasoning,raven,Qwen7B,4.0,0.23
+confidence,cvr,No judge,7.0,0.22999999999999998
+confidence,marsvqa,No judge,3.0,0.229
+majority,cvr,No judge,3.0,0.22799999999999998
+majority,raven,No judge,4.0,0.223
+confidence,raven,No judge,6.0,0.221
+reasoning,raven,Intern8B,4.0,0.21
+reasoning_with_image,marsvqa,Intern8B,6.0,0.2
+confidence,cvr,No judge,3.0,0.2
+reasoning,marsvqa,Intern8B,6.0,0.2
+majority,marsvqa,No judge,6.0,0.194
+reasoning,cvr,Qwen7B,3.0,0.17
+reasoning_with_image,raven,Intern8B,3.0,0.16
+confidence,raven,No judge,8.0,0.154
+confidence,raven,No judge,4.0,0.152
+reasoning_with_image,raven,Intern8B,8.0,0.14
+reasoning,raven,Qwen7B,8.0,0.14
+reasoning,raven,Intern8B,8.0,0.13
+reasoning,raven,Qwen7B,3.0,0.12
+reasoning,raven,Intern8B,3.0,0.12
+majority,raven,No judge,8.0,0.118
+confidence,raven,No judge,2.0,0.11200000000000002
+majority,raven,No judge,3.0,0.10800000000000001
+confidence,raven,No judge,3.0,0.10500000000000001
